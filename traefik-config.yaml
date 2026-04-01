@@ -92,4 +92,4 @@ spec:
                 loadBalancer:
                   passHostHeader: true
                   servers:
-                    - url: "http://192.168.178.10:8086"
+                    - url: "http://192.168.178.10:8006"
