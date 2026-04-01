@@ -1,0 +1,74 @@
+# /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    env:
+      - name: CF_DNS_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-api-token
+            key: api-token
+
+    additionalArguments:
+      - "--certificatesresolvers.cloudflare.acme.email=whygonghui@gmail.com"
+      - "--certificatesresolvers.cloudflare.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
+
+    persistence:
+      enabled: true
+      path: /data
+      size: 1Gi
+    api:
+      dashboard: true
+
+    ingressRoute:
+      dashboard:
+        enabled: true
+        entryPoints:
+          - websecure
+        matchRule: Host(`traefik.home.hgpe.dev`)
+        tls:
+          certResolver: cloudflare
+          domains:
+            - main: home.hgpe.dev
+              sans:
+                - "*.home.hgpe.dev"
+    providers:
+      file:
+        enabled: true
+        watch: true
+        content: |-
+          http:
+            routers:
+              adguard-http:
+                rule: "Host(`adguard.home.hgpe.dev`)"
+                entryPoints:
+                  - web
+                middlewares:
+                  - redirect-to-https
+                service: adguard-svc
+
+              adguard-https:
+                rule: "Host(`adguard.home.hgpe.dev`)"
+                entryPoints:
+                  - websecure
+                tls:
+                  certResolver: cloudflare
+                service: adguard-svc
+
+            middlewares:
+              redirect-to-https:
+                redirectScheme:
+                  scheme: https
+
+            services:
+              adguard-svc:
+                loadBalancer:
+                  passHostHeader: true
+                  servers:
+                    - url: "http://192.168.178.12"
