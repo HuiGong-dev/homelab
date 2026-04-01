@@ -88,8 +88,14 @@ spec:
                   passHostHeader: true
                   servers:
                     - url: "http://192.168.178.12"
+
               pve-svc:
                 loadBalancer:
                   passHostHeader: true
+                  serversTransport: pve-transport
                   servers:
-                    - url: "http://192.168.178.10:8006"
+                    - url: "https://192.168.178.10:8006"
+
+            serversTransports:
+              pve-transport:
+                insecureSkipVerify: true
