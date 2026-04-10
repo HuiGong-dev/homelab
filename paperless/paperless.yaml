@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperless
+  namespace: paperless
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless
+  template:
+    metadata:
+      labels:
+        app: paperless
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done
+        - name: wait-for-redis
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - until nc -z redis 6379; do echo waiting for redis; sleep 2; done
+      containers:
+        - name: paperless
+          image: ghcr.io/paperless-ngx/paperless-ngx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: PAPERLESS_REDIS
+              value: redis://redis:6379
+            - name: PAPERLESS_DBHOST
+              value: postgres
+            - name: PAPERLESS_DBENGINE
+              value: postgresql
+            - name: PAPERLESS_DBNAME
+              value: paperless
+            - name: PAPERLESS_URL
+              value: https://paperless.home.hgpe.dev
+            - name: PAPERLESS_TIME_ZONE
+              value: Europe/Berlin
+            - name: USERMAP_UID
+              value: "1000"
+            - name: USERMAP_GID
+              value: "1000"
+          envFrom:
+            - secretRef:
+                name: paperless-secret
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/paperless/data
+            - name: media
+              mountPath: /usr/src/paperless/media
+            - name: consume
+              mountPath: /usr/src/paperless/consume
+            - name: export
+              mountPath: /usr/src/paperless/export
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: paperless-data
+        - name: media
+          persistentVolumeClaim:
+            claimName: paperless-media
+        - name: consume
+          persistentVolumeClaim:
+            claimName: paperless-consume
+        - name: export
+          persistentVolumeClaim:
+            claimName: paperless-export
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperless
+  namespace: paperless
+spec:
+  selector:
+    app: paperless
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
