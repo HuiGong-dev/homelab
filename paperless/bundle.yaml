@@ -21,7 +21,7 @@ metadata:
   namespace: paperless
 type: Opaque
 stringData:
-  PAPERLESS_SECRET_KEY: change-this-to-a-long-random-string
+  PAPERLESS_SECRET_KEY: b15a349f6f3c1917122ed32f86a6bd3cae6fbf3b0f1653a697cadd699e3f70cb
   PAPERLESS_ADMIN_USER: hui
   PAPERLESS_ADMIN_PASSWORD: change-me-too
   PAPERLESS_DBUSER: paperless

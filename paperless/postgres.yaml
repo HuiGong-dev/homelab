@@ -25,7 +25,7 @@ spec:
               name: postgres
           volumeMounts:
             - name: data
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql
           readinessProbe:
             exec:
               command:
@@ -35,12 +35,12 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 10
           resources:
-          requests:
-            cpu: "50m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           livenessProbe:
             exec:
               command:
