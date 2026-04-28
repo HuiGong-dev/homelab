@@ -12,7 +12,6 @@ spec:
   tls:
     - hosts:
         - paperless.home.hgpe.dev
-      secretName: paperless-home-hgpe-dev-tls
   rules:
     - host: paperless.home.hgpe.dev
       http:
