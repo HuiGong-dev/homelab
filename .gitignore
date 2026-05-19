@@ -1,2 +1,11 @@
 iso-images/
 .vscode/
+secrets/
+
+# Terraform files
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+*.auto.tfvars
