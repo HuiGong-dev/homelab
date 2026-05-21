@@ -1,0 +1,10 @@
+---
+admin_users:
+  - name: hui
+    ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILgQoYjAQubI+5gVNvDYhEVxSNAQXLKSUBGDZazZiei9 hellohuigong@gmail.com"
+  - name: ansible
+    ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMu6t5m5QRJY0YlP2B3iTFqRbbXmrt5kXMuzzaYQ6c4g ansible"
+
+ssh_allowed_users:
+  - ansible
+  - hui
