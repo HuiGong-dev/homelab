@@ -77,7 +77,7 @@ qm set 9000 \
   --scsi0 local-lvm:vm-9000-disk-0,discard=on
 ```
 
-Proxmox examples commonly use `qm importdisk`, attach the imported disk, add a cloud-init drive, and then convert the VM to a template. ([Proxmox VE][1])
+Proxmox examples commonly use `qm importdisk`, attach the imported disk, add a cloud-init drive, and then convert the VM to a template.
 
 ## 6. Add cloud-init drive
 
