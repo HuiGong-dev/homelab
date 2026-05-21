@@ -17,6 +17,7 @@ module "test_vm_01" {
   memory_mb    = 2048
   datastore_id = "local-lvm"
   bridge       = "vmbr0"
+  disk_size_gb = 20
 
   ip_config    = local.test_vm_01_ip_config
   ipv4_gateway = "192.168.178.1"
