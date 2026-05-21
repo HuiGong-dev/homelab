@@ -6,8 +6,11 @@ resource "proxmox_virtual_environment_vm" "this" {
   tags        = var.tags
   started     = var.started
 
+  stop_on_destroy = var.stop_on_destroy
+
   clone {
     vm_id = var.template_vm_id
+    full  = var.full_clone
   }
 
   agent {
@@ -38,6 +41,8 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   initialization {
+    datastore_id = var.datastore_id
+
     user_account {
       username = var.ci_user
       keys     = [var.ssh_public_key]
@@ -46,6 +51,7 @@ resource "proxmox_virtual_environment_vm" "this" {
     ip_config {
       ipv4 {
         address = var.ip_config
+        gateway = var.ipv4_gateway
       }
     }
   }

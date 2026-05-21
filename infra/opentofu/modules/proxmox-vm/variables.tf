@@ -13,6 +13,12 @@ variable "template_vm_id" {
   type        = number
 }
 
+variable "full_clone" {
+  description = "Whether to create a full clone from the template"
+  type        = bool
+  default     = true
+}
+
 variable "vm_id" {
   description = "VM ID to assign to the new VM"
   type        = number
@@ -55,9 +61,15 @@ variable "bridge" {
 }
 
 variable "ip_config" {
-  description = "Cloud-init IP config, for example ip=dhcp or ip=192.168.178.20/24,gw=192.168.178.1"
+  description = "Cloud-init IPv4 address, for example dhcp or 192.168.178.20/24"
   type        = string
-  default     = "ip=dhcp"
+  default     = "dhcp"
+}
+
+variable "ipv4_gateway" {
+  description = "Optional Cloud-init IPv4 gateway"
+  type        = string
+  default     = null
 }
 
 variable "ci_user" {
@@ -79,6 +91,12 @@ variable "tags" {
 
 variable "started" {
   description = "Whether the VM should be started after creation"
+  type        = bool
+  default     = true
+}
+
+variable "stop_on_destroy" {
+  description = "Whether to stop the VM before destroying it"
   type        = bool
   default     = true
 }
