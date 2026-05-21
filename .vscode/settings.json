@@ -1,7 +1,0 @@
-{
-  "yaml.schemas": {
-    "kubernetes": "*.yaml",
-    "kubernetes://schema/apps/v1@deployment": "file:///Users/huigong/homelab/paperless/postgres.yaml",
-    "kubernetes://schema/v1@service": "file:///Users/huigong/homelab/paperless/paperless.yaml"
-  }
-}
