@@ -6,6 +6,8 @@
   vars:
     timezone: Europe/Berlin
     baseline_packages:
+      - sudo
+      - openssh-server
       - curl
       - wget
       - git
@@ -38,6 +40,71 @@
         name: "{{ baseline_packages }}"
         state: present
 
+    - name: Ensure admin users exist
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        groups: sudo
+        append: true
+        shell: /bin/bash
+        create_home: true
+        state: present
+      loop: "{{ admin_users }}"
+
+    - name: Ensure admin SSH directories exist
+      ansible.builtin.file:
+        path: "/home/{{ item.name }}/.ssh"
+        state: directory
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: "0700"
+      loop: "{{ admin_users }}"
+
+    - name: Install admin SSH authorized keys
+      ansible.posix.authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ item.ssh_public_key }}"
+        state: present
+        exclusive: true
+      loop: "{{ admin_users }}"
+
+    - name: Allow admin users passwordless sudo
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0440"
+        content: "{{ item.name }} ALL=(ALL) NOPASSWD:ALL\n"
+        validate: /usr/sbin/visudo -cf %s
+      loop: "{{ admin_users }}"
+
+    - name: Ensure sshd config drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install SSH hardening config
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/99-homelab-hardening.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          PermitRootLogin no
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+          ChallengeResponseAuthentication no
+          PubkeyAuthentication yes
+          AllowUsers {{ ssh_allowed_users | join(' ') }}
+      notify:
+        - Validate sshd config
+        - Reload sshd
+
+    - name: Apply SSH hardening before any reboot
+      ansible.builtin.meta: flush_handlers
+
     - name: Ensure qemu guest agent is enabled and running
       ansible.builtin.systemd:
         name: qemu-guest-agent
@@ -54,3 +121,13 @@
         msg: "Reboot triggered by Ansible after package updates"
         reboot_timeout: 300
       when: reboot_required.stat.exists
+
+  handlers:
+    - name: Validate sshd config
+      ansible.builtin.command: /usr/sbin/sshd -t
+      changed_when: false
+
+    - name: Reload sshd
+      ansible.builtin.systemd:
+        name: ssh
+        state: reloaded
