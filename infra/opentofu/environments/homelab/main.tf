@@ -1,46 +1,28 @@
-resource "proxmox_virtual_environment_vm" "test_vm_01" {
-  name        = "test-vm-01"
-  description = "Managed by OpenTofu"
-  tags        = ["opentofu", "ansible", "test"]
+locals {
+  test_vm_01_ip_config = "192.168.178.60/24"
+}
 
-  node_name = var.node_name
-  vm_id     = 110
+module "test_vm_01" {
+  source = "../../modules/proxmox-vm"
 
-  clone {
-    vm_id = 9001
-    full  = true
-  }
+  vm_name        = "test-vm-01"
+  description    = "Managed by OpenTofu"
+  tags           = ["opentofu", "ansible", "test"]
+  node_name      = var.proxmox_node_name
+  vm_id          = 110
+  template_vm_id = var.template_vm_id
+  full_clone     = true
 
-  cpu {
-    cores = 2
-    type  = "x86-64-v2-AES"
-  }
+  cpu_cores    = 2
+  memory_mb    = 2048
+  datastore_id = "local-lvm"
+  bridge       = "vmbr0"
 
-  memory {
-    dedicated = 2048
-  }
+  ip_config    = local.test_vm_01_ip_config
+  ipv4_gateway = "192.168.178.1"
 
-  network_device {
-    bridge = "vmbr0"
-  }
-
-  initialization {
-    datastore_id = "local-lvm"
-
-    ip_config {
-      ipv4 {
-        address = "192.168.178.60/24"
-        gateway = "192.168.178.1"
-      }
-    }
-
-    user_account {
-      username = "ubuntu"
-      keys     = [var.ssh_public_key]
-    }
-  }
-
-  started = true
-
+  ci_user         = "ubuntu"
+  ssh_public_key  = var.ssh_public_key
+  started         = true
   stop_on_destroy = true
 }
