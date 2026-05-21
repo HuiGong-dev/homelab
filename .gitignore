@@ -1,11 +1,24 @@
-iso-images/
-.vscode/
-secrets/
-
-# Terraform files
+# OpenTofu / Terraform
+**/.terraform/
 *.tfstate
 *.tfstate.*
-.terraform/
+*.tfvars
+!*.tfvars.example
 .terraform.lock.hcl
-terraform.tfvars
-*.auto.tfvars
+
+# Secrets
+secrets/
+*.env
+*.secret
+*.key
+*.pem
+
+# ISOs / large local files
+iso-images/
+*.iso
+
+# macOS
+.DS_Store
+
+# Ansible
+*.retry
