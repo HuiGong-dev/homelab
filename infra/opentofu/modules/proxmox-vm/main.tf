@@ -45,7 +45,7 @@ resource "proxmox_virtual_environment_vm" "this" {
 
     user_account {
       username = var.ci_user
-      keys     = [var.ssh_public_key]
+      keys     = var.ssh_public_keys
     }
 
     ip_config {

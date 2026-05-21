@@ -23,7 +23,7 @@ module "test_vm_01" {
   ipv4_gateway = "192.168.178.1"
 
   ci_user         = "ubuntu"
-  ssh_public_key  = var.ssh_public_key
+  ssh_public_keys = [var.ssh_public_key, var.ssh_public_key_automation]
   started         = true
   stop_on_destroy = true
 }

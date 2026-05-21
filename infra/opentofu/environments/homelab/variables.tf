@@ -29,3 +29,8 @@ variable "ssh_public_key" {
   description = "SSH public key"
   type        = string
 }
+
+variable "ssh_public_key_automation" {
+  description = "SSH public key for automation"
+  type        = string
+}

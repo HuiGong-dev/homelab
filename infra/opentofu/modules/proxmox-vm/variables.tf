@@ -78,9 +78,9 @@ variable "ci_user" {
   default     = "hui"
 }
 
-variable "ssh_public_key" {
-  description = "SSH public key for cloud-init user"
-  type        = string
+variable "ssh_public_keys" {
+  description = "SSH public keys for cloud-init user"
+  type        = list(string)
 }
 
 variable "tags" {
