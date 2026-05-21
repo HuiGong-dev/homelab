@@ -1,0 +1,28 @@
+---
+- name: Ensure sshd config drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/ssh/sshd_config.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install SSH hardening config
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/99-homelab-hardening.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      ChallengeResponseAuthentication no
+      PubkeyAuthentication yes
+      AllowUsers {{ ssh_allowed_users | join(' ') }}
+  notify:
+    - Validate sshd config
+    - Reload sshd
+
+- name: Apply SSH hardening before any later role continues
+  ansible.builtin.meta: flush_handlers

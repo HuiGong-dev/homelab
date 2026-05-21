@@ -1,0 +1,14 @@
+---
+timezone: Europe/Berlin
+
+baseline_packages:
+  - sudo
+  - openssh-server
+  - curl
+  - wget
+  - git
+  - vim
+  - htop
+  - unzip
+  - ca-certificates
+  - qemu-guest-agent
