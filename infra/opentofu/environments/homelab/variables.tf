@@ -1,18 +1,31 @@
 variable "proxmox_endpoint" {
-  type      = string
-  sensitive = true
+  description = "Proxmox API endpoint"
+  type        = string
 }
 
 variable "proxmox_api_token" {
-  type      = string
-  sensitive = true
+  description = "Proxmox API token"
+  type        = string
+  sensitive   = true
+}
+
+variable "proxmox_node_name" {
+  description = "Proxmox node name"
+  type        = string
+}
+
+variable "template_vm_id" {
+  description = "Default template VM ID"
+  type        = number
+}
+
+variable "ci_user" {
+  description = "Default cloud-init user"
+  type        = string
+  default     = "hui"
 }
 
 variable "ssh_public_key" {
-  type = string
-}
-
-variable "node_name" {
-  type    = string
-  default = "pve"
+  description = "SSH public key"
+  type        = string
 }
