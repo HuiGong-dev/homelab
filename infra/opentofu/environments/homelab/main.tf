@@ -7,7 +7,7 @@ module "adguard_vm_01" {
 
   vm_name        = "adguard-02"
   description    = "Managed by OpenTofu"
-  tags           = ["opentofu", "ansible", "adgurad"]
+  tags           = ["opentofu", "ansible", "adguard"]
   node_name      = var.proxmox_node_name
   vm_id          = 103
   template_vm_id = var.template_vm_id
