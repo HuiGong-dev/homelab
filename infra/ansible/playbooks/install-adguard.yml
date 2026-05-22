@@ -1,0 +1,7 @@
+---
+- name: Install AdGuard Home
+  hosts: adguard
+  become: true
+
+  roles:
+    - adguard

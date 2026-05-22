@@ -1,0 +1,125 @@
+---
+- name: Ensure AdGuard Home web password hash is configured
+  ansible.builtin.assert:
+    that:
+      - adguard_web_password_hash is defined
+      - adguard_web_password_hash | length > 0
+    fail_msg: >-
+      Set adguard_web_password_hash to a bcrypt hash in inventory vars before
+      running this role.
+
+- name: Install AdGuard Home dependencies
+  ansible.builtin.apt:
+    name:
+      - curl
+      - dnsutils
+      - tar
+    state: present
+    update_cache: true
+
+- name: Build AdGuard Home download URL
+  ansible.builtin.set_fact:
+    adguard_download_url: >-
+      https://github.com/AdguardTeam/AdGuardHome/releases/{{
+      'latest/download' if adguard_version == 'latest' else 'download/' ~ adguard_version
+      }}/AdGuardHome_linux_{{ adguard_arch }}.tar.gz
+
+- name: Download AdGuard Home release archive
+  ansible.builtin.get_url:
+    url: "{{ adguard_download_url }}"
+    dest: "{{ adguard_archive_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Extract AdGuard Home release archive
+  ansible.builtin.unarchive:
+    src: "{{ adguard_archive_path }}"
+    dest: /opt
+    remote_src: true
+    creates: "{{ adguard_install_dir }}/AdGuardHome"
+    owner: root
+    group: root
+
+- name: Install AdGuard Home configuration
+  ansible.builtin.template:
+    src: AdGuardHome.yaml.j2
+    dest: "{{ adguard_install_dir }}/AdGuardHome.yaml"
+    owner: root
+    group: root
+    mode: "0600"
+  register: adguard_config
+
+- name: Ensure systemd-resolved drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Disable systemd-resolved DNS stub listener
+  ansible.builtin.copy:
+    dest: /etc/systemd/resolved.conf.d/adguardhome.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      [Resolve]
+      DNS=127.0.0.1
+      DNSStubListener=no
+  notify: Restart systemd-resolved
+
+- name: Check current resolver config
+  ansible.builtin.stat:
+    path: /etc/resolv.conf
+  register: resolv_conf
+
+- name: Back up existing resolver config
+  ansible.builtin.copy:
+    src: /etc/resolv.conf
+    dest: /etc/resolv.conf.adguardhome-backup
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+    force: false
+  when: not (resolv_conf.stat.islnk | default(false))
+
+- name: Use systemd-resolved managed resolver config
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    src: /run/systemd/resolve/resolv.conf
+    state: link
+    force: true
+    owner: root
+    group: root
+  notify: Restart systemd-resolved
+
+- name: Restart systemd-resolved before AdGuard Home starts
+  ansible.builtin.meta: flush_handlers
+
+- name: Check AdGuard Home service unit
+  ansible.builtin.stat:
+    path: /etc/systemd/system/AdGuardHome.service
+  register: adguard_service_unit
+
+- name: Install AdGuard Home systemd service
+  ansible.builtin.command:
+    cmd: ./AdGuardHome -s install
+    chdir: "{{ adguard_install_dir }}"
+  when: not adguard_service_unit.stat.exists
+  changed_when: true
+
+- name: Ensure AdGuard Home is enabled and running
+  ansible.builtin.systemd:
+    name: AdGuardHome
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Restart AdGuard Home when configuration changed
+  ansible.builtin.systemd:
+    name: AdGuardHome
+    state: restarted
+  when: adguard_config.changed

@@ -1,0 +1,7 @@
+---
+adguard_web_username: admin
+
+# Set this to a bcrypt hash before running playbooks/install-adguard.yml.
+# Example:
+# htpasswd -bnBC 10 "" 'change-me' | tr -d ':\n'
+adguard_web_password_hash: "$2y$10$5SbIX8b5fCvKayQ2Z.BqX.FCGNZFadEvAxHio4BKSchVMBDx3nVcO%"
