@@ -9,6 +9,15 @@ Assumption:
 - DNS port: `53`
 - Initial setup UI port: `3000`
 
+For the IaC-managed test VM, `adguard-02` uses `192.168.178.13` and is installed with Ansible:
+
+```sh
+cd infra/ansible
+ansible-playbook playbooks/install-adguard.yml
+```
+
+Before running the playbook, set `adguard_web_password_hash` in `inventories/homelab/group_vars/adguard.yml`.
+
 ---
 
 ## 1. Download and install AdGuard Home
