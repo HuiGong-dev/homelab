@@ -1,15 +1,15 @@
 locals {
-  test_vm_01_ip_config = "192.168.178.60/24"
+  adguard_vm_01_ip_config = "192.168.178.13/24"
 }
 
-module "test_vm_01" {
+module "adguard_vm_01" {
   source = "../../modules/proxmox-vm"
 
-  vm_name        = "test-vm-01"
+  vm_name        = "adguard-02"
   description    = "Managed by OpenTofu"
-  tags           = ["opentofu", "ansible", "test"]
+  tags           = ["opentofu", "ansible", "adgurad"]
   node_name      = var.proxmox_node_name
-  vm_id          = 110
+  vm_id          = 103
   template_vm_id = var.template_vm_id
   full_clone     = true
 
@@ -19,7 +19,7 @@ module "test_vm_01" {
   bridge       = "vmbr0"
   disk_size_gb = 20
 
-  ip_config    = local.test_vm_01_ip_config
+  ip_config    = local.adguard_vm_01_ip_config
   ipv4_gateway = "192.168.178.1"
 
   ci_user         = "ansible"
