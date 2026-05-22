@@ -1,29 +1,31 @@
----
+http:
+  pprof:
+    port: 6060
+    enabled: false
+  doh:
+    routes:
+      - GET /dns-query
+      - POST /dns-query
+      - GET /dns-query/{ClientID}
+      - POST /dns-query/{ClientID}
+    insecure_enabled: false
+  address: {{ (adguard_bind_host ~ ':' ~ adguard_web_port) | to_json }}
+  session_ttl: {{ adguard_http_session_ttl | to_json }}
 users:
   - name: {{ adguard_web_username | to_json }}
     password: {{ adguard_web_password_hash | to_json }}
 auth_attempts: 5
 block_auth_min: 15
-http:
-  address: {{ (adguard_bind_host ~ ':' ~ adguard_web_port) | to_json }}
-  session_ttl: 720h
-  pprof:
-    port: 6060
-    enabled: false
 http_proxy: ""
-language: ""
+language: {{ adguard_language | to_json }}
 theme: auto
 dns:
   bind_hosts:
-    - {{ adguard_bind_host | to_json }}
+{% for bind_host in adguard_dns_bind_hosts | default([adguard_bind_host]) %}
+    - {{ bind_host | to_json }}
+{% endfor %}
   port: {{ adguard_dns_port }}
   anonymize_client_ip: false
-  protection_enabled: true
-  filtering_enabled: true
-  blocking_mode: default
-  blocked_response_ttl: 10
-  parental_block_host: family-block.dns.adguard.com
-  safebrowsing_block_host: standard-block.dns.adguard.com
   ratelimit: 20
   ratelimit_subnet_len_ipv4: 24
   ratelimit_subnet_len_ipv6: 56
@@ -39,8 +41,8 @@ dns:
     - {{ resolver | to_json }}
 {% endfor %}
   fallback_dns: []
-  all_servers: false
-  fastest_addr: false
+  upstream_mode: {{ adguard_upstream_mode | to_json }}
+  fastest_timeout: {{ adguard_fastest_timeout | to_json }}
   allowed_clients: []
   disallowed_clients: []
   blocked_hosts:
@@ -50,10 +52,13 @@ dns:
   trusted_proxies:
     - 127.0.0.0/8
     - ::1/128
+  cache_enabled: true
   cache_size: 4194304
   cache_ttl_min: 0
   cache_ttl_max: 0
   cache_optimistic: false
+  cache_optimistic_answer_ttl: {{ adguard_cache_optimistic_answer_ttl | to_json }}
+  cache_optimistic_max_age: {{ adguard_cache_optimistic_max_age | to_json }}
   bogus_nxdomain: []
   aaaa_disabled: false
   enable_dnssec: false
@@ -62,13 +67,22 @@ dns:
     enabled: false
     use_custom: false
   max_goroutines: 300
-  ipset: []
-  filters_update_interval: {{ adguard_filter_update_interval }}
   handle_ddr: true
+  ipset: []
+  ipset_file: ""
+  bootstrap_prefer_ipv6: false
+  upstream_timeout: {{ adguard_upstream_timeout | to_json }}
+  private_networks: []
   use_private_ptr_resolvers: true
   local_ptr_upstreams: []
   use_dns64: false
   dns64_prefixes: []
+  serve_http3: false
+  use_http3_upstreams: false
+  serve_plain_dns: true
+  hostsfile_enabled: true
+  pending_requests:
+    enabled: true
 tls:
   enabled: false
   server_name: ""
@@ -78,26 +92,32 @@ tls:
   port_dns_over_quic: 853
   port_dnscrypt: 0
   dnscrypt_config_file: ""
-  allow_unencrypted_doh: false
   certificate_chain: ""
   private_key: ""
   certificate_path: ""
   private_key_path: ""
+  strict_sni_check: false
 querylog:
-  enabled: true
-  file_enabled: true
-  interval: {{ adguard_querylog_interval }}
+  dir_path: ""
+  ignored: []
+  interval: {{ adguard_querylog_interval | to_json }}
   size_memory: 1000
-  ignored: []
-statistics:
   enabled: true
-  interval: {{ adguard_stats_interval }}
+  ignored_enabled: false
+  file_enabled: true
+statistics:
+  dir_path: ""
   ignored: []
+  interval: {{ adguard_stats_interval | to_json }}
+  enabled: true
+  ignored_enabled: false
 filters:
-  - enabled: true
-    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
-    name: AdGuard DNS filter
-    id: 1
+{% for filter in adguard_filters %}
+  - enabled: {{ filter.enabled | bool | lower }}
+    url: {{ filter.url | to_json }}
+    name: {{ filter.name | to_json }}
+    id: {{ filter.id }}
+{% endfor %}
 whitelist_filters: []
 user_rules: []
 dhcp:
@@ -111,9 +131,12 @@ dhcp:
     range_end: ""
     lease_duration: 86400
     icmp_timeout_msec: 1000
+    options: []
   dhcpv6:
     range_start: ""
     lease_duration: 86400
+    ra_slaac_only: false
+    ra_allow_slaac: false
 filtering:
   blocking_ipv4: ""
   blocking_ipv6: ""
@@ -121,6 +144,38 @@ filtering:
     schedule:
       time_zone: Local
     ids: []
+  protection_disabled_until: null
+  safe_search:
+    enabled: false
+    bing: true
+    duckduckgo: true
+    ecosia: true
+    google: true
+    pixabay: true
+    yandex: true
+    youtube: true
+  blocking_mode: default
+  parental_block_host: family-block.dns.adguard.com
+  safebrowsing_block_host: standard-block.dns.adguard.com
+  rewrites:
+{% for rewrite in adguard_rewrites %}
+    - domain: {{ rewrite.domain | to_json }}
+      answer: {{ rewrite.answer | to_json }}
+      enabled: {{ rewrite.enabled | bool | lower }}
+{% endfor %}
+  safe_fs_patterns:
+    - {{ (adguard_install_dir ~ '/userfilters/*') | to_json }}
+  safebrowsing_cache_size: 1048576
+  safesearch_cache_size: 1048576
+  parental_cache_size: 1048576
+  cache_time: 30
+  filters_update_interval: {{ adguard_filter_update_interval }}
+  blocked_response_ttl: 10
+  filtering_enabled: true
+  rewrites_enabled: true
+  parental_enabled: false
+  safebrowsing_enabled: false
+  protection_enabled: true
 clients:
   runtime_sources:
     whois: true
@@ -130,6 +185,7 @@ clients:
     hosts: true
   persistent: []
 log:
+  enabled: true
   file: ""
   max_backups: 0
   max_size: 100
@@ -141,4 +197,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 29
+schema_version: 34
