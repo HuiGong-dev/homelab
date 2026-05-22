@@ -13,11 +13,11 @@ module "adguard_vm_01" {
   template_vm_id = var.template_vm_id
   full_clone     = true
 
-  cpu_cores    = 2
-  memory_mb    = 2048
+  cpu_cores    = 1
+  memory_mb    = 1024
   datastore_id = "local-lvm"
   bridge       = "vmbr0"
-  disk_size_gb = 20
+  disk_size_gb = 10
 
   ip_config    = local.adguard_vm_01_ip_config
   ipv4_gateway = "192.168.178.1"
