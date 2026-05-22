@@ -1,6 +1,6 @@
 ---
 - name: Bootstrap baseline Linux VM
-  hosts: test_vms
+  hosts: homelab_vms
   become: true
 
   roles:
