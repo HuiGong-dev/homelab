@@ -1,6 +1,6 @@
 ---
 - name: Install and config AdGuard Home
-  hosts: adguard
+  hosts: adguard_servers
   become: true
 
   roles:

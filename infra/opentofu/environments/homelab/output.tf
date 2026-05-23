@@ -1,5 +1,5 @@
 output "adguard_vm_ip" {
-  value = split("/", local.adguard_vm_01_ip_config)[0]
+  value = split("/", local.adguard_ip_config)[0]
 }
 
 output "adguard_vm_id" {
