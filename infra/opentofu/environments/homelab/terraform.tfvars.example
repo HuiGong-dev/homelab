@@ -1,0 +1,7 @@
+proxmox_endpoint          = "https://pve.example.com"
+proxmox_api_token         = "replace-me"
+ssh_public_key            = "replace-me"
+ssh_public_key_automation = "replace-me"
+proxmox_node_name         = "your-pve-node-name"
+template_vm_id            = 9000
+ci_user_password          = "replace-me"
