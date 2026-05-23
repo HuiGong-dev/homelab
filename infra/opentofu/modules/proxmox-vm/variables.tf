@@ -83,6 +83,11 @@ variable "ssh_public_keys" {
   type        = list(string)
 }
 
+variable "ci_user_password" {
+  description = "Cloud-init user password"
+  type        = string
+}
+
 variable "tags" {
   description = "VM tags"
   type        = list(string)

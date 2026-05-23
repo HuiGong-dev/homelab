@@ -25,6 +25,11 @@ variable "ci_user" {
   default     = "hui"
 }
 
+variable "ci_user_password" {
+  description = "Default cloud-init user password"
+  type        = string
+}
+
 variable "ssh_public_key" {
   description = "SSH public key"
   type        = string
