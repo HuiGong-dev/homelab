@@ -86,6 +86,7 @@ variable "ssh_public_keys" {
 variable "ci_user_password" {
   description = "Cloud-init user password"
   type        = string
+  sensitive   = true
 }
 
 variable "tags" {

@@ -19,15 +19,10 @@ variable "template_vm_id" {
   type        = number
 }
 
-variable "ci_user" {
-  description = "Default cloud-init user"
-  type        = string
-  default     = "hui"
-}
-
 variable "ci_user_password" {
   description = "Default cloud-init user password"
   type        = string
+  sensitive   = true
 }
 
 variable "ssh_public_key" {
