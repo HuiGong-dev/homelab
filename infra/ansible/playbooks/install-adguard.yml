@@ -4,4 +4,7 @@
   become: true
 
   roles:
+    - common
+    - users
+    - ssh_hardening
     - adguard
