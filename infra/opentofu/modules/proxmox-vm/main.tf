@@ -40,6 +40,10 @@ resource "proxmox_virtual_environment_vm" "this" {
     type = "l26"
   }
 
+  vga {
+    type = "std"
+  }
+
   initialization {
     datastore_id = var.datastore_id
 
