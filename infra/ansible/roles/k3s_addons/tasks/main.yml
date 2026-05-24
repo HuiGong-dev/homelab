@@ -1,0 +1,62 @@
+---
+- name: Ensure Cloudflare API token is configured
+  ansible.builtin.assert:
+    that:
+      - cloudflare_api_token is defined
+      - cloudflare_api_token | length > 0
+    fail_msg: >-
+      Set cloudflare_api_token with -e or answer the private playbook prompt
+      before running this role.
+  no_log: true
+
+- name: Wait for Kubernetes API
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl get nodes
+  register: k3s_api_ready
+  changed_when: false
+  until: k3s_api_ready.rc == 0
+  retries: 30
+  delay: 10
+
+- name: Ensure k3s manifests directory exists
+  ansible.builtin.file:
+    path: "{{ k3s_manifests_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Apply Cloudflare API token Secret
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl apply -f -
+    stdin: |
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: cloudflare-api-token
+        namespace: kube-system
+      type: Opaque
+      data:
+        api-token: "{{ cloudflare_api_token | b64encode }}"
+  register: cloudflare_secret_apply
+  changed_when: >-
+    'created' in cloudflare_secret_apply.stdout
+    or 'configured' in cloudflare_secret_apply.stdout
+  no_log: true
+
+- name: Install Traefik HelmChartConfig manifest
+  ansible.builtin.template:
+    src: traefik-config.yaml.j2
+    dest: "{{ k3s_traefik_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Wait for Traefik rollout
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl -n kube-system rollout status deployment/traefik --timeout=300s
+  register: traefik_rollout
+  changed_when: false
+  until: traefik_rollout.rc == 0
+  retries: 3
+  delay: 10

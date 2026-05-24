@@ -1,0 +1,13 @@
+---
+- name: Install and configure k3s
+  hosts: k3s_servers
+  become: true
+
+  vars_prompt:
+    - name: cloudflare_api_token
+      prompt: Cloudflare API token for Traefik DNS-01
+      private: true
+
+  roles:
+    - k3s_server
+    - k3s_addons

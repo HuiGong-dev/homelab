@@ -1,0 +1,6 @@
+---
+cluster-init: true
+write-kubeconfig-mode: "0644"
+node-ip: "{{ k3s_node_ip }}"
+etcd-snapshot-schedule-cron: "{{ k3s_etcd_snapshot_schedule_cron }}"
+etcd-snapshot-retention: {{ k3s_etcd_snapshot_retention }}

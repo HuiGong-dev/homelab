@@ -1,0 +1,7 @@
+---
+k3s_channel: stable
+k3s_node_ip: "{{ ansible_host }}"
+k3s_config_path: /etc/rancher/k3s/config.yaml
+k3s_etcd_snapshot_schedule_cron: "0 */12 * * *"
+k3s_etcd_snapshot_retention: 7
+k3s_install_script_path: /tmp/k3s-install.sh

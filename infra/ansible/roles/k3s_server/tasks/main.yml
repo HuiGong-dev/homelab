@@ -1,0 +1,76 @@
+---
+- name: Install k3s prerequisites
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+    state: present
+    update_cache: true
+
+- name: Ensure k3s config directory exists
+  ansible.builtin.file:
+    path: "{{ k3s_config_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install k3s server configuration
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ k3s_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart k3s
+
+- name: Download k3s install script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: "{{ k3s_install_script_path }}"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Check whether k3s is installed
+  ansible.builtin.stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary
+
+- name: Install k3s server
+  ansible.builtin.command:
+    cmd: "{{ k3s_install_script_path }}"
+  environment:
+    INSTALL_K3S_CHANNEL: "{{ k3s_channel }}"
+    INSTALL_K3S_EXEC: server
+  when: not k3s_binary.stat.exists
+  changed_when: true
+
+- name: Ensure k3s service is enabled and running
+  ansible.builtin.systemd:
+    name: k3s
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Flush k3s restart before readiness checks
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for k3s kubeconfig
+  ansible.builtin.wait_for:
+    path: /etc/rancher/k3s/k3s.yaml
+    timeout: 300
+
+- name: Wait for Kubernetes API
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl get nodes
+  register: k3s_get_nodes
+  changed_when: false
+  until: k3s_get_nodes.rc == 0
+  retries: 30
+  delay: 10
+
+- name: Wait for k3s nodes to be ready
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl wait node --all --for=condition=Ready --timeout=300s
+  changed_when: false
