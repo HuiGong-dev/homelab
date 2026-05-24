@@ -1,5 +1,5 @@
 output "adguard_vm_ip" {
-  value = split("/", local.adguard_ip_config)[0]
+  value = module.adguard.cloud_init_ipv4_address
 }
 
 output "adguard_vm_id" {
