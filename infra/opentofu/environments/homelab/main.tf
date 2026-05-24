@@ -2,7 +2,7 @@ locals {
   adguard_ip_config = "192.168.178.12/24"
 }
 
-module "adguard_vm_01" {
+module "adguard" {
   source = "../../modules/proxmox-vm"
 
   vm_name        = "adguard"
@@ -27,4 +27,9 @@ module "adguard_vm_01" {
   ssh_public_keys  = [var.ssh_public_key_automation]
   started          = true
   stop_on_destroy  = true
+}
+
+moved {
+  from = module.adguard_vm_01
+  to   = module.adguard
 }

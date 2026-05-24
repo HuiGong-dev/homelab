@@ -3,9 +3,9 @@ output "adguard_vm_ip" {
 }
 
 output "adguard_vm_id" {
-  value = module.adguard_vm_01.vm_id
+  value = module.adguard.vm_id
 }
 
 output "adguard_vm_name" {
-  value = module.adguard_vm_01.name
+  value = module.adguard.name
 }
