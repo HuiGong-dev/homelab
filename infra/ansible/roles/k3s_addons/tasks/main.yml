@@ -52,6 +52,48 @@
     group: root
     mode: "0644"
 
+- name: Install system-upgrade-controller CRDs
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl apply -f {{ k3s_system_upgrade_crd_url }}
+  register: system_upgrade_crds
+  changed_when: >-
+    'created' in system_upgrade_crds.stdout
+    or 'configured' in system_upgrade_crds.stdout
+
+- name: Install system-upgrade-controller
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl apply -f {{ k3s_system_upgrade_controller_url }}
+  register: system_upgrade_controller
+  changed_when: >-
+    'created' in system_upgrade_controller.stdout
+    or 'configured' in system_upgrade_controller.stdout
+
+- name: Wait for system-upgrade-controller rollout
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl -n system-upgrade rollout status deployment/system-upgrade-controller --timeout=300s
+  register: system_upgrade_controller_rollout
+  changed_when: false
+  until: system_upgrade_controller_rollout.rc == 0
+  retries: 3
+  delay: 10
+
+- name: Install k3s system upgrade Plan manifest
+  ansible.builtin.template:
+    src: k3s-server-upgrade-plan.yaml.j2
+    dest: "{{ k3s_system_upgrade_plan_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Wait for k3s system upgrade Plan
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl -n system-upgrade get plan k3s-server-plan
+  register: k3s_upgrade_plan
+  changed_when: false
+  until: k3s_upgrade_plan.rc == 0
+  retries: 30
+  delay: 10
+
 - name: Wait for Traefik rollout
   ansible.builtin.command:
     cmd: /usr/local/bin/k3s kubectl -n kube-system rollout status deployment/traefik --timeout=300s

@@ -1,4 +1,4 @@
-# k3s-server-upgrade-plan.yaml
+# /var/lib/rancher/k3s/server/manifests/k3s-server-upgrade-plan.yaml
 apiVersion: upgrade.cattle.io/v1
 kind: Plan
 metadata:
@@ -17,12 +17,13 @@ spec:
   upgrade:
     image: rancher/k3s-upgrade
 
-  channel: https://update.k3s.io/v1-release/channels/stable
+  channel: {{ k3s_upgrade_channel }}
 
   window:
     days:
-      - saturday
-      - sunday
-    startTime: "10:00"
-    endTime: "22:00"
-    timeZone: "Europe/Berlin"
+{% for day in k3s_upgrade_window_days %}
+      - {{ day }}
+{% endfor %}
+    startTime: "{{ k3s_upgrade_window_start_time }}"
+    endTime: "{{ k3s_upgrade_window_end_time }}"
+    timeZone: "{{ k3s_upgrade_window_timezone }}"

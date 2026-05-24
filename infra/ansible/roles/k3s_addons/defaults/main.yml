@@ -1,3 +1,13 @@
 ---
 k3s_manifests_dir: /var/lib/rancher/k3s/server/manifests
 k3s_traefik_config_path: "{{ k3s_manifests_dir }}/traefik-config.yaml"
+k3s_system_upgrade_crd_url: https://github.com/rancher/system-upgrade-controller/releases/latest/download/crd.yaml
+k3s_system_upgrade_controller_url: https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
+k3s_system_upgrade_plan_path: "{{ k3s_manifests_dir }}/k3s-server-upgrade-plan.yaml"
+k3s_upgrade_channel: https://update.k3s.io/v1-release/channels/stable
+k3s_upgrade_window_days:
+  - saturday
+  - sunday
+k3s_upgrade_window_start_time: "10:00"
+k3s_upgrade_window_end_time: "22:00"
+k3s_upgrade_window_timezone: Europe/Berlin
