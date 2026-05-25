@@ -5,3 +5,17 @@
 
   roles:
     - k3s_agent
+
+- name: Label k3s agent nodes
+  hosts: "{{ k3s_server_host | default(groups['k3s_servers'][0]) }}"
+  become: true
+
+  tasks:
+    - name: Label agents as worker nodes
+      ansible.builtin.command:
+        cmd: >-
+          /usr/local/bin/k3s kubectl label node {{ item }}
+          node-role.kubernetes.io/worker=worker
+          --overwrite
+      loop: "{{ groups['k3s_agents'] }}"
+      changed_when: false
