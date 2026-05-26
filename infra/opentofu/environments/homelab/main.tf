@@ -2,6 +2,8 @@ locals {
   adguard_ip_config       = "192.168.178.12/24"
   k3s_server_01_ip_config = "192.168.178.13/24"
   k3s_agent_01_ip_config  = "192.168.178.14/24"
+  router_ip               = "192.168.178.1"
+  dns_servers             = [split("/", local.adguard_ip_config)[0], local.router_ip]
 }
 
 module "adguard" {
@@ -49,7 +51,8 @@ module "k3s-server-01" {
   disk_size_gb = 250
 
   ip_config    = local.k3s_server_01_ip_config
-  ipv4_gateway = "192.168.178.1"
+  ipv4_gateway = local.router_ip
+  dns_servers  = local.dns_servers
 
   ci_user          = "ansible"
   ci_user_password = var.ci_user_password
@@ -76,7 +79,8 @@ module "k3s-agent-01" {
   disk_size_gb = 50
 
   ip_config    = local.k3s_agent_01_ip_config
-  ipv4_gateway = "192.168.178.1"
+  ipv4_gateway = local.router_ip
+  dns_servers  = local.dns_servers
 
   ci_user          = "ansible"
   ci_user_password = var.ci_user_password

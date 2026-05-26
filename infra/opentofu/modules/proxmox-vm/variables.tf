@@ -72,6 +72,12 @@ variable "ipv4_gateway" {
   default     = null
 }
 
+variable "dns_servers" {
+  description = "Optional Cloud-init DNS servers"
+  type        = list(string)
+  default     = []
+}
+
 variable "ci_user" {
   description = "Cloud-init user"
   type        = string

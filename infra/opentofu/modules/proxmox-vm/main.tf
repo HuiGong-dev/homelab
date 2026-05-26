@@ -47,6 +47,14 @@ resource "proxmox_virtual_environment_vm" "this" {
   initialization {
     datastore_id = var.datastore_id
 
+    dynamic "dns" {
+      for_each = length(var.dns_servers) > 0 ? [var.dns_servers] : []
+
+      content {
+        servers = dns.value
+      }
+    }
+
     user_account {
       username = var.ci_user
       keys     = var.ssh_public_keys
