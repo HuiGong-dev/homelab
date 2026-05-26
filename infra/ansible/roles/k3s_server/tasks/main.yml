@@ -1,4 +1,28 @@
 ---
+- name: Set k3s server cluster role
+  ansible.builtin.set_fact:
+    k3s_server_cluster_init: "{{ inventory_hostname == k3s_server_init_host }}"
+    k3s_effective_token: "{{ k3s_token | default('', true) }}"
+
+- name: Validate k3s server variables
+  ansible.builtin.assert:
+    that:
+      - k3s_channel is defined
+      - k3s_channel | length > 0
+      - k3s_node_ip is defined
+      - k3s_node_ip | length > 0
+      - k3s_config_path is defined
+      - k3s_config_path | length > 0
+      - k3s_install_script_path is defined
+      - k3s_install_script_path | length > 0
+      - k3s_server_init_host is defined
+      - k3s_server_init_host | length > 0
+      - k3s_server_url is defined
+      - k3s_server_url | length > 0
+    fail_msg: >-
+      Required k3s server variables are missing. Ensure the k3s_server role
+      defaults are loaded and k3s_servers contains the init server.
+
 - name: Install k3s prerequisites
   ansible.builtin.apt:
     name:
@@ -15,7 +39,7 @@
     group: root
     mode: "0755"
 
-- name: Install k3s server configuration
+- name: Install k3s bootstrap server configuration
   ansible.builtin.template:
     src: config.yaml.j2
     dest: "{{ k3s_config_path }}"
@@ -23,6 +47,8 @@
     group: root
     mode: "0644"
   notify: Restart k3s
+  when: k3s_server_cluster_init | bool
+  no_log: "{{ k3s_effective_token | length > 0 }}"
 
 - name: Download k3s install script
   ansible.builtin.get_url:
@@ -37,13 +63,99 @@
     path: /usr/local/bin/k3s
   register: k3s_binary
 
-- name: Install k3s server
+- name: Install k3s bootstrap server
   ansible.builtin.command:
     cmd: "{{ k3s_install_script_path }}"
   environment:
     INSTALL_K3S_CHANNEL: "{{ k3s_channel }}"
     INSTALL_K3S_EXEC: server
-  when: not k3s_binary.stat.exists
+  when:
+    - k3s_server_cluster_init | bool
+    - not k3s_binary.stat.exists
+  changed_when: true
+
+- name: Ensure bootstrap k3s service is enabled and running
+  ansible.builtin.systemd:
+    name: k3s
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: k3s_server_cluster_init | bool
+
+- name: Flush bootstrap k3s restart before token discovery
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for bootstrap k3s kubeconfig
+  ansible.builtin.wait_for:
+    path: /etc/rancher/k3s/k3s.yaml
+    timeout: 300
+  when: k3s_server_cluster_init | bool
+
+- name: Wait for bootstrap Kubernetes API
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s kubectl get nodes
+  register: k3s_get_nodes
+  changed_when: false
+  until: k3s_get_nodes.rc == 0
+  retries: 30
+  delay: 10
+  when: k3s_server_cluster_init | bool
+
+- name: Read k3s cluster token from bootstrap server
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: k3s_server_node_token
+  delegate_to: "{{ k3s_server_init_host }}"
+  run_once: true
+  when: k3s_effective_token | length == 0
+  no_log: true
+
+- name: Use discovered k3s cluster token
+  ansible.builtin.set_fact:
+    k3s_effective_token: "{{ k3s_server_node_token.content | b64decode | trim }}"
+  when: k3s_effective_token | length == 0
+  no_log: true
+
+- name: Validate k3s joining server token
+  ansible.builtin.assert:
+    that:
+      - k3s_effective_token is defined
+      - k3s_effective_token | length > 0
+    fail_msg: >-
+      Joining server nodes need k3s_token set or a reachable bootstrap server
+      with /var/lib/rancher/k3s/server/node-token available.
+  when: not (k3s_server_cluster_init | bool)
+  no_log: true
+
+- name: Install k3s joining server configuration
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ k3s_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart k3s
+  when: not (k3s_server_cluster_init | bool)
+  no_log: true
+
+- name: Wait for bootstrap k3s server API
+  ansible.builtin.wait_for:
+    host: "{{ hostvars[k3s_server_init_host].ansible_host }}"
+    port: 6443
+    timeout: 300
+  when:
+    - not (k3s_server_cluster_init | bool)
+    - not k3s_binary.stat.exists
+
+- name: Install k3s joining server
+  ansible.builtin.command:
+    cmd: "{{ k3s_install_script_path }}"
+  environment:
+    INSTALL_K3S_CHANNEL: "{{ k3s_channel }}"
+    INSTALL_K3S_EXEC: server
+  when:
+    - not (k3s_server_cluster_init | bool)
+    - not k3s_binary.stat.exists
   changed_when: true
 
 - name: Ensure k3s service is enabled and running

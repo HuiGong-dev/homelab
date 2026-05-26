@@ -3,11 +3,17 @@
   hosts: k3s_servers
   become: true
 
+  roles:
+    - k3s_server
+
+- name: Install and configure k3s addons
+  hosts: "{{ k3s_addons_host | default(k3s_server_init_host | default(groups['k3s_servers'][0])) }}"
+  become: true
+
   vars_prompt:
     - name: cloudflare_api_token
       prompt: Cloudflare API token for Traefik DNS-01
       private: true
 
   roles:
-    - k3s_server
     - k3s_addons

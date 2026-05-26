@@ -5,3 +5,5 @@ k3s_config_path: /etc/rancher/k3s/config.yaml
 k3s_etcd_snapshot_schedule_cron: "0 */12 * * *"
 k3s_etcd_snapshot_retention: 7
 k3s_install_script_path: /tmp/k3s-install.sh
+k3s_server_init_host: "{{ groups['k3s_servers'][0] }}"
+k3s_server_url: "https://{{ hostvars[k3s_server_init_host].ansible_host }}:6443"

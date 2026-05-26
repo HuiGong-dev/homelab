@@ -1,5 +1,13 @@
 ---
+{% if k3s_server_cluster_init | bool %}
 cluster-init: true
+{% else %}
+server: "{{ k3s_server_url }}"
+token: "{{ k3s_effective_token }}"
+{% endif %}
+{% if (k3s_server_cluster_init | bool) and (k3s_effective_token is defined) and (k3s_effective_token | length > 0) %}
+token: "{{ k3s_effective_token }}"
+{% endif %}
 write-kubeconfig-mode: "0644"
 node-ip: "{{ k3s_node_ip }}"
 etcd-snapshot-schedule-cron: "{{ k3s_etcd_snapshot_schedule_cron }}"
