@@ -1,0 +1,13 @@
+---
+- name: Test SOPS vars loading
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Load encrypted SOPS vars
+      community.sops.load_vars:
+          file: ../inventories/homelab/group_vars/secrets.sops.yml
+
+    - name: Confirm secret exists without printing it
+      ansible.builtin.debug:
+        msg: "cloudflare_api_token is loaded"
+      when: cloudflare_api_token is defined
