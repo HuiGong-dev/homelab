@@ -17,8 +17,8 @@
       - k3s_server_url is defined
       - k3s_server_url | length > 0
     fail_msg: >-
-      Required k3s agent variables are missing. Set k3s_token with -e
-      and ensure the k3s_agent role defaults are loaded.
+      Required k3s agent variables are missing. Add k3s_token to the SOPS
+      inventory vars file and ensure the k3s_agent role defaults are loaded.
   no_log: true
 
 - name: Check whether k3s agent is installed
