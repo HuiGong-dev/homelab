@@ -15,13 +15,14 @@ Personal platform engineering homelab running on Proxmox and Kubernetes.
 
 ## Layers
 
-| Layer          | Path               | Purpose                                |
-| -------------- | ------------------ | -------------------------------------- |
-| Infrastructure | `infra/opentofu`   | Provision VMs on Proxmox               |
-| Configuration  | `infra/ansible`    | Bootstrap Linux hosts                  |
-| Platform       | `cluster/platform` | Kubernetes platform components         |
-| Applications   | `cluster/apps`     | User-facing workloads                  |
-| Documentation  | `docs`             | Runbooks, IP table, architecture notes |
+| Layer                  | Path                         | Purpose                                      |
+| ---------------------- | ---------------------------- | -------------------------------------------- |
+| Provisioning           | `provisioning/opentofu`      | Provision VMs on Proxmox                     |
+| Configuration          | `provisioning/ansible`       | Bootstrap Linux hosts                        |
+| Cluster entrypoints    | `clusters`                   | Per-cluster Flux bootstrap and wiring        |
+| Cluster infrastructure | `infrastructure`             | Kubernetes operators, controllers, and repos |
+| Applications           | `apps`                       | User-facing Kubernetes workloads             |
+| Documentation          | `docs`                       | Runbooks, IP table, architecture notes       |
 
 ## Current services
 
@@ -37,19 +38,19 @@ Personal platform engineering homelab running on Proxmox and Kubernetes.
 Secrets are committed as encrypted YAML with SOPS and age.
 
 - `.sops.yaml` defines the age recipient used for `*.sops.yml` files.
-- `infra/ansible/ansible.cfg` enables the `community.sops.sops` vars plugin.
-- `infra/ansible/inventories/homelab/group_vars/all.sops.yml` stores encrypted inventory values such as Cloudflare, Tailscale, and k3s credentials.
+- `provisioning/ansible/ansible.cfg` enables the `community.sops.sops` vars plugin.
+- `provisioning/ansible/inventories/homelab/group_vars/all.sops.yml` stores encrypted inventory values such as Cloudflare, Tailscale, and k3s credentials.
 - Ansible reads the local age identity from `~/.sops/age.txt`.
 
 ## Common commands
 
 ```sh
-cd infra/opentofu/environments/homelab
+cd provisioning/opentofu/environments/homelab
 tofu plan
 tofu apply
 ```
 
 ```sh
-cd infra/ansible
+cd provisioning/ansible
 ansible-playbook playbooks/test-sops.yml
 ```
