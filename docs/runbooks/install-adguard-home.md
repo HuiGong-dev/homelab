@@ -12,8 +12,8 @@ Assumption:
 The IaC-managed VM is named `adguard`, uses `192.168.178.12`, and is installed with Ansible:
 
 ```sh
-cd infra/ansible
-ansible-playbook playbooks/install-adguard.yml
+cd provisioning/ansible
+ansible-playbook playbooks/adguard.yml
 ```
 
 Before running the playbook, set `adguard_web_password_hash` in `inventories/homelab/group_vars/adguard_servers.yml`.
