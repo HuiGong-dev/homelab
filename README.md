@@ -10,6 +10,7 @@ Personal platform engineering homelab running on Proxmox and Kubernetes.
 | Provisioning      | OpenTofu                      | Declarative VM provisioning                |
 | Configuration     | Ansible                       | Host bootstrap and service configuration   |
 | Kubernetes        | k3s                           | Lightweight Kubernetes cluster             |
+| GitOps            | Flux                          | CLI-first Kubernetes reconciliation        |
 | Ingress           | Traefik                       | k3s built-in ingress controller            |
 | Secret management | SOPS + age                    | Encrypted Ansible inventory secrets        |
 
@@ -23,6 +24,10 @@ Personal platform engineering homelab running on Proxmox and Kubernetes.
 | Cluster infrastructure | `infrastructure`             | Kubernetes operators, controllers, and repos |
 | Applications           | `apps`                       | User-facing Kubernetes workloads             |
 | Documentation          | `docs`                       | Runbooks, IP table, architecture notes       |
+
+## GitOps
+
+Flux reconciles the Kubernetes cluster from this repository. It fits this homelab well because it has first-class SOPS + age support for encrypted secrets, is lightweight, works cleanly from the CLI, and models GitOps primitives as native Kubernetes CRDs. That makes it a good match for a platform-engineering workflow where cluster state should be declarative, inspectable, and automation-friendly.
 
 ## Current services
 
