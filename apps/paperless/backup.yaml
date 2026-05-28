@@ -34,7 +34,7 @@ spec:
                 - until nc -z redis 6379; do echo waiting for redis; sleep 2; done
           containers:
             - name: exporter
-              image: ghcr.io/paperless-ngx/paperless-ngx:2.20.15
+              image: paperless-ngx
               imagePullPolicy: IfNotPresent
               args:
                 - document_exporter

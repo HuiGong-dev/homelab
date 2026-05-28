@@ -43,7 +43,7 @@ spec:
             - until nc -z gotenberg 3000; do echo waiting for gotenberg; sleep 2; done
       containers:
         - name: paperless
-          image: ghcr.io/paperless-ngx/paperless-ngx:2.20.15
+          image: paperless-ngx
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000

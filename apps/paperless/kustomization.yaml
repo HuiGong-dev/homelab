@@ -10,3 +10,7 @@ resources:
   - paperless.yaml
   - backup.yaml
   - ingress.yaml
+images:
+  - name: paperless-ngx
+    newName: ghcr.io/paperless-ngx/paperless-ngx
+    newTag: 2.20.15
