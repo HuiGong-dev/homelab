@@ -61,6 +61,10 @@ spec:
               value: https://paperless.home.hgpe.dev
             - name: PAPERLESS_TIME_ZONE
               value: Europe/Berlin
+            - name: PAPERLESS_OCR_LANGUAGE
+              value: deu+eng+chi-sim
+            - name: PAPERLESS_OCR_LANGUAGES
+              value: chi-sim
             - name: PAPERLESS_TIKA_ENABLED
               value: "true"
             - name: PAPERLESS_TIKA_ENDPOINT
