@@ -51,7 +51,7 @@ spec:
             - name: PAPERLESS_DBNAME
               value: paperless
             - name: PAPERLESS_URL
-              value: https://paperless.home.hgpe.dev
+              value: https://paperless-old.home.hgpe.dev
             - name: PAPERLESS_TIME_ZONE
               value: Europe/Berlin
             - name: USERMAP_UID

@@ -11,9 +11,9 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - paperless.home.hgpe.dev
+        - paperless-old.home.hgpe.dev
   rules:
-    - host: paperless.home.hgpe.dev
+    - host: paperless-old.home.hgpe.dev
       http:
         paths:
           - path: /
