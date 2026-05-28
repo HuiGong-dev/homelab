@@ -64,7 +64,7 @@ spec:
             - name: PAPERLESS_OCR_LANGUAGE
               value: deu+eng+chi_sim
             - name: PAPERLESS_OCR_LANGUAGES
-              value: chi_sim
+              value: chi-sim
             - name: PAPERLESS_TIKA_ENABLED
               value: "true"
             - name: PAPERLESS_TIKA_ENDPOINT
