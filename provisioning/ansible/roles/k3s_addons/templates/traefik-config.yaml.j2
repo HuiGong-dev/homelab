@@ -61,6 +61,22 @@ spec:
                   certResolver: cloudflare
                 service: adguard-svc
 
+              homeassistant-http:
+                rule: "Host(`homeassistant.home.hgpe.dev`)"
+                entryPoints:
+                  - web
+                middlewares:
+                  - redirect-to-https
+                service: homeassistant-svc
+
+              homeassistant-https:
+                rule: "Host(`homeassistant.home.hgpe.dev`)"
+                entryPoints:
+                  - websecure
+                tls:
+                  certResolver: cloudflare
+                service: homeassistant-svc                
+
               pve-http:
                 rule: "Host(`pve.home.hgpe.dev`)"
                 entryPoints:
@@ -88,6 +104,12 @@ spec:
                   passHostHeader: true
                   servers:
                     - url: "http://192.168.178.12"
+
+              homeassistant-svc:
+                loadBalancer:
+                  passHostHeader: true
+                  servers:
+                    - url: "http://192.168.178.15:8123"                    
 
               pve-svc:
                 loadBalancer:
