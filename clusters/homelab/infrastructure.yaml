@@ -5,6 +5,10 @@ metadata:
   name: infrastructure
   namespace: flux-system
 spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   interval: 10m0s
   path: ./infrastructure
   prune: true
