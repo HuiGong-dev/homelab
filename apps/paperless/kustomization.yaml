@@ -8,4 +8,5 @@ resources:
   - redis.yaml
   - document-services.yaml
   - paperless.yaml
+  - backup.yaml
   - ingress.yaml
