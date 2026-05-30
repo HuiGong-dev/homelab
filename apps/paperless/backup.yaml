@@ -17,7 +17,7 @@ spec:
             app.kubernetes.io/name: paperless-export
             app.kubernetes.io/part-of: paperless
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
           enableServiceLinks: false
           initContainers:
             - name: wait-for-db
@@ -36,9 +36,14 @@ spec:
             - name: exporter
               image: paperless-ngx
               imagePullPolicy: IfNotPresent
+              workingDir: /usr/src/paperless/src
               command:
-                - /usr/local/bin/document_exporter
+                - /command/s6-setuidgid
               args:
+                - paperless
+                - python3
+                - manage.py
+                - document_exporter
                 - --delete
                 - /usr/src/paperless/export
               env:
