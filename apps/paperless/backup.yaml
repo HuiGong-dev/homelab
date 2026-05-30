@@ -4,8 +4,10 @@ metadata:
   name: paperless-export
   namespace: paperless
 spec:
-  schedule: "30 3 * * *"
+  schedule: "0 1 * * *"
+  timeZone: Europe/Berlin
   concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 1800
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   jobTemplate:
