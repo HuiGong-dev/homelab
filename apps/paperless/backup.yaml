@@ -36,8 +36,9 @@ spec:
             - name: exporter
               image: paperless-ngx
               imagePullPolicy: IfNotPresent
+              command:
+                - /usr/local/bin/document_exporter
               args:
-                - document_exporter
                 - --delete
                 - /usr/src/paperless/export
               env:
