@@ -1,0 +1,19 @@
+nas_samba_passwords:
+  tmbackup: ENC[AES256_GCM,data:pMQKhZd0R8fgm35A,iv:iG4VD5Ro2JZUdbKCpYMsdlhOnQoNGkB7qL9rWutBvIk=,tag:nXetCIpeT6/l9A8iA8+2Qw==,type:str]
+  habackup: ENC[AES256_GCM,data:DjDK0TIjbW9pBLxs3Q==,iv:MGGLp8vA5zWdhz2xNVOScgHPfedZ0XH14lnZLjqmUvA=,tag:p2IWGN9S0DiRuMUYKj62GA==,type:str]
+  nasfiles: ENC[AES256_GCM,data:v2qW3so28bc//has,iv:9LEa7z7BS0hj90p0Ett/nMzN5XuWyz5t2uH1MR85yck=,tag:D+G94Y9m9ILOq4aHiGWV0g==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSByUlBUL3Z5ME1iaWM5T0hL
+        UXVaUlhrRjlRY1dTK2ZKU2RwUlhLNTdieFY0CmpNTG0xNEVybzBpQS9CdFR6Nlh5
+        WVdwRi9RQWpBWjVBVHBLd0RCNFVlbTQKLS0tIFhoWU0ya01lYWFUbzJiTlBSVTZS
+        b2VMYnp1TWZoNVRjcW4vNzkzVGdid2sK6NK4JIsXOWuGLeDKK0AoK7JXaHfIIU02
+        CZ2u8Y68hBcMclUMfcxHO7OHsl3aE1S5tQYKaFohMNizHtl9QEDzvA==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1uk09pkyhmhgqceskv8e8s6665530t5vwuhvy5nqxx3ckftf0jp5sm2l79d
+  lastmodified: "2026-05-30T14:06:33Z"
+  mac: ENC[AES256_GCM,data:623HqEwuoxWQKZ3D4uWJMsUaMW5J4YUQOuhr5d575A1Yoe8h+IiDCFOT6nk5stw907R/9pxZZtYjNicBdsZKMKolUXEL4sJVNNJEgqRhuNSsOLAF7F3sbnL+EnkCQ5IAinT9jP7+OZu1MfPuKmz9LZwIhEqUXP2+sqLpPxBO7Hk=,iv:YTp0siET+icEzJWQFS3hx632ABhhzcpJv78UDxnSexA=,tag:QDR4k+oH9EyfWJP7WbYjYQ==,type:str]
+  unencrypted_suffix: _unencrypted
+  version: 3.13.1

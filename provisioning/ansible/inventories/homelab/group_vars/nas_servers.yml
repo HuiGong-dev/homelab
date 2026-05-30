@@ -1,0 +1,43 @@
+---
+nas_mount_path: /srv/nas
+nas_disk_uuid: "38529580-58e1-45b1-af3f-7869e2709d58"
+nas_disk_fstype: ext4
+nas_mount_options: defaults,nofail,x-systemd.device-timeout=30s
+
+nas_workgroup: WORKGROUP
+nas_server_string: Seagate NAS
+nas_time_machine_share_name: TimeMachine
+nas_force_samba_password_update: false
+
+nas_samba_users:
+  - name: tmbackup
+    comment: Time Machine backup user
+  - name: habackup
+    comment: Home Assistant backup user
+  - name: nasfiles
+    comment: Shared files user
+
+nas_samba_shares:
+  - name: TimeMachine
+    path: "{{ nas_mount_path }}/timemachine"
+    owner: tmbackup
+    group: tmbackup
+    valid_users:
+      - tmbackup
+      - nasfiles
+    time_machine: true
+  - name: HomeAssistantBackups
+    path: "{{ nas_mount_path }}/home-assistant-backups"
+    owner: habackup
+    group: habackup
+    valid_users:
+      - habackup
+      - nasfiles
+    time_machine: false
+  - name: Shared
+    path: "{{ nas_mount_path }}/shared"
+    owner: nasfiles
+    group: nasfiles
+    valid_users:
+      - nasfiles
+    time_machine: false

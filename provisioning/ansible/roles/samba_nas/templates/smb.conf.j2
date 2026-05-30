@@ -1,0 +1,35 @@
+[global]
+   workgroup = {{ nas_workgroup }}
+   server string = {{ nas_server_string }}
+   server role = standalone server
+   security = user
+   map to guest = Never
+   passdb backend = tdbsam
+
+   log file = /var/log/samba/log.%m
+   max log size = 1000
+   logging = file
+   panic action = /usr/share/samba/panic-action %d
+
+   min protocol = SMB2
+   ea support = yes
+   store dos attributes = yes
+   fruit:aapl = yes
+   fruit:model = MacSamba
+   vfs objects = catia fruit streams_xattr
+
+{% for share in nas_samba_shares %}
+[{{ share.name }}]
+   path = {{ share.path }}
+   browseable = yes
+   read only = no
+   valid users = {{ share.valid_users | join(' ') }}
+   force user = {{ share.owner }}
+   force group = {{ share.group }}
+   create mask = 0660
+   directory mask = 0770
+{% if share.time_machine | default(false) %}
+   fruit:time machine = yes
+{% endif %}
+
+{% endfor %}

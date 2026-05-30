@@ -112,3 +112,24 @@ variable "stop_on_destroy" {
   type        = bool
   default     = true
 }
+
+variable "usb_devices" {
+  description = "Optional host USB devices or cluster mappings to attach to the VM"
+  type = list(object({
+    host    = optional(string)
+    mapping = optional(string)
+    usb3    = optional(bool, false)
+  }))
+  default = []
+
+  validation {
+    condition = alltrue([
+      for device in var.usb_devices :
+      (
+        (try(trimspace(device.host), "") != "" && try(trimspace(device.mapping), "") == "") ||
+        (try(trimspace(device.host), "") == "" && try(trimspace(device.mapping), "") != "")
+      )
+    ])
+    error_message = "Each USB device must set exactly one non-empty value for host or mapping."
+  }
+}

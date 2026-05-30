@@ -2,6 +2,7 @@ locals {
   adguard_ip_config       = "192.168.178.12/24"
   k3s_server_01_ip_config = "192.168.178.13/24"
   k3s_agent_01_ip_config  = "192.168.178.14/24"
+  nas_vm_ip_config        = "192.168.178.16/24"
   router_ip               = "192.168.178.1"
   dns_servers             = [split("/", local.adguard_ip_config)[0], local.router_ip]
 }
@@ -79,6 +80,34 @@ module "k3s-agent-01" {
   disk_size_gb = 50
 
   ip_config    = local.k3s_agent_01_ip_config
+  ipv4_gateway = local.router_ip
+  dns_servers  = local.dns_servers
+
+  ci_user          = "ansible"
+  ci_user_password = var.ci_user_password
+  ssh_public_keys  = [var.ssh_public_key_automation]
+  started          = true
+  stop_on_destroy  = true
+}
+
+module "nas-vm" {
+  source = "../../modules/proxmox-vm"
+
+  vm_name        = "nas-vm"
+  description    = "Managed by OpenTofu"
+  tags           = ["opentofu", "ansible", "nas", "samba"]
+  node_name      = var.proxmox_node_name
+  vm_id          = 107
+  template_vm_id = var.template_vm_id
+  full_clone     = true
+
+  cpu_cores    = 1
+  memory_mb    = 2048
+  datastore_id = "local-lvm"
+  bridge       = "vmbr0"
+  disk_size_gb = 20
+
+  ip_config    = local.nas_vm_ip_config
   ipv4_gateway = local.router_ip
   dns_servers  = local.dns_servers
 

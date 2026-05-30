@@ -34,3 +34,9 @@ variable "ssh_public_key_automation" {
   description = "SSH public key for automation"
   type        = string
 }
+
+variable "nas_usb_host" {
+  description = "Documented Proxmox USB host path for the Seagate disk. Real USB device passthrough is applied manually as root."
+  type        = string
+  default     = ""
+}

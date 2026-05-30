@@ -1,0 +1,141 @@
+---
+- name: Ensure NAS disk UUID is configured
+  ansible.builtin.assert:
+    that:
+      - nas_disk_uuid is defined
+      - nas_disk_uuid | trim | length > 0
+      - nas_disk_fstype == "ext4"
+    fail_msg: >-
+      Set nas_disk_uuid to the ext4 filesystem UUID of the formatted Seagate
+      disk before running this role.
+
+- name: Ensure Samba passwords are configured
+  ansible.builtin.assert:
+    that:
+      - nas_samba_passwords is defined
+      - nas_samba_passwords is mapping
+      - (nas_samba_passwords | default({})).get(item.name, '') | length >= 12
+    fail_msg: >-
+      Set nas_samba_passwords.{{ item.name }} in an encrypted SOPS vars file
+      before running this role.
+  loop: "{{ nas_samba_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Install NAS packages
+  ansible.builtin.apt:
+    name: "{{ samba_nas_packages }}"
+    state: present
+    update_cache: true
+
+- name: Ensure NAS mount path exists
+  ansible.builtin.file:
+    path: "{{ nas_mount_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Mount NAS disk by UUID
+  ansible.posix.mount:
+    path: "{{ nas_mount_path }}"
+    src: "UUID={{ nas_disk_uuid | trim }}"
+    fstype: "{{ nas_disk_fstype }}"
+    opts: "{{ nas_mount_options }}"
+    state: mounted
+
+- name: Verify NAS mount filesystem
+  ansible.builtin.command:
+    cmd: "findmnt -rn --mountpoint {{ nas_mount_path }} --output FSTYPE"
+  register: nas_mount_fstype_result
+  changed_when: false
+  failed_when: false
+
+- name: Fail if NAS disk is not mounted as ext4
+  ansible.builtin.assert:
+    that:
+      - nas_mount_fstype_result.rc == 0
+      - nas_mount_fstype_result.stdout == nas_disk_fstype
+    fail_msg: >-
+      {{ nas_mount_path }} must be an active {{ nas_disk_fstype }} mount before
+      Samba shares are created.
+
+- name: Ensure NAS Unix groups exist
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    system: true
+    state: present
+  loop: "{{ nas_samba_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Ensure NAS Unix users exist
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    comment: "{{ item.comment }}"
+    group: "{{ item.name }}"
+    shell: /usr/sbin/nologin
+    create_home: false
+    system: true
+    state: present
+  loop: "{{ nas_samba_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Ensure NAS share directories exist
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "0770"
+  loop: "{{ nas_samba_shares }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Install Samba configuration
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: "0644"
+    validate: testparm -s %s
+  notify:
+    - Restart smbd
+    - Restart nmbd
+
+- name: Install Avahi SMB service advertisement
+  ansible.builtin.template:
+    src: avahi-samba.service.j2
+    dest: /etc/avahi/services/samba.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart avahi-daemon
+
+- name: Check Samba passdb users
+  ansible.builtin.command:
+    cmd: "pdbedit -L -u {{ item.name }}"
+  register: samba_passdb_users
+  changed_when: false
+  failed_when: false
+  loop: "{{ nas_samba_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Add missing Samba passdb users
+  ansible.builtin.command:
+    cmd: "smbpasswd -s -a {{ item.item.name }}"
+    stdin: "{{ nas_samba_passwords[item.item.name] }}\n{{ nas_samba_passwords[item.item.name] }}\n"
+  loop: "{{ samba_passdb_users.results }}"
+  when: item.rc != 0 or nas_force_samba_password_update | bool
+  changed_when: true
+  no_log: true
+
+- name: Ensure NAS services are enabled and running
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ samba_nas_services }}"

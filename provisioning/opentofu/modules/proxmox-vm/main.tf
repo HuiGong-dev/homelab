@@ -44,6 +44,16 @@ resource "proxmox_virtual_environment_vm" "this" {
     type = "std"
   }
 
+  dynamic "usb" {
+    for_each = var.usb_devices
+
+    content {
+      host    = try(usb.value.host, null)
+      mapping = try(usb.value.mapping, null)
+      usb3    = try(usb.value.usb3, false)
+    }
+  }
+
   initialization {
     datastore_id = var.datastore_id
 

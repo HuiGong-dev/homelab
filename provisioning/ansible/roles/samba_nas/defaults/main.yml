@@ -1,0 +1,13 @@
+---
+samba_nas_packages:
+  - samba
+  - samba-vfs-modules
+  - avahi-daemon
+  - smartmontools
+  - e2fsprogs
+  - acl
+
+samba_nas_services:
+  - smbd
+  - nmbd
+  - avahi-daemon
