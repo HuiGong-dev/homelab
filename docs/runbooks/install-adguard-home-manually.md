@@ -1,6 +1,6 @@
-# Install AdGuard Home
+# Install AdGuard Home manually
 
-This guide installs AdGuard Home directly on a Linux VM using the official release archive and systemd service.
+This guide manually installs AdGuard Home directly on a Linux VM using the official release archive and systemd service. Check `/provisioning/ansible/roles/adguard` if you want to automate this process with ansible.
 
 Assumption:
 
