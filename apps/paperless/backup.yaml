@@ -39,7 +39,7 @@ spec:
               args:
                 - document_exporter
                 - --delete
-                - /usr/src/paperless/export/current
+                - /usr/src/paperless/export
               env:
                 - name: PAPERLESS_REDIS
                   value: redis://redis:6379
