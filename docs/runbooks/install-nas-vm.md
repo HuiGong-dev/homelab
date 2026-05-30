@@ -253,6 +253,34 @@ ls -ld /srv/nas/timemachine
 pdbedit -L
 ```
 
+## 9. Set up Time Machine on macOS
+
+First confirm Finder can connect to the backup share:
+
+```text
+smb://nasfiles@192.168.178.16/TimeMachine
+```
+
+Then configure Time Machine:
+
+1. Open **System Settings**.
+2. Go to **General** -> **Time Machine**.
+3. Click **Add Backup Disk...**.
+4. Select `TimeMachine` on `nas-vm` or `192.168.178.16`.
+5. Use **Registered User** credentials:
+   - Username: `nasfiles`
+   - Password: the `nasfiles` Samba password
+6. Enable backup encryption when prompted.
+7. Start the first backup from the Time Machine menu or wait for the automatic
+   backup.
+
+If `TimeMachine` does not appear in the disk list, connect to the share in
+Finder first, then reopen Time Machine settings.
+
+This share is currently uncapped, so Time Machine can eventually use most of the
+free NAS disk. Add a Samba `fruit:time machine max size` setting later if you
+want a hard limit.
+
 ## Notes
 
 - Ansible never formats the Seagate disk. If `nas_disk_uuid` is empty, the disk
