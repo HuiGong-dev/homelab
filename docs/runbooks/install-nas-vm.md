@@ -281,6 +281,38 @@ This share is currently uncapped, so Time Machine can eventually use most of the
 free NAS disk. Add a Samba `fruit:time machine max size` setting later if you
 want a hard limit.
 
+### Set or change the Time Machine quota later
+
+If the macOS UI does not offer a useful quota option, set it with `tmutil`.
+Terminal needs Full Disk Access for this:
+
+1. Open **System Settings** -> **Privacy & Security** -> **Full Disk Access**.
+2. Enable Full Disk Access for the terminal app you use.
+3. Find the Time Machine destination ID:
+
+```bash
+tmutil destinationinfo
+```
+
+Look for the `ID` for the `TimeMachine` destination, then set the quota in GB:
+
+```bash
+sudo tmutil setquota <destination-id> 1000
+```
+
+Example quota values:
+
+- `500` for 500 GB
+- `1000` for 1 TB
+- `1500` for 1.5 TB
+
+The new quota takes effect on the next backup to that destination. To trigger
+one manually:
+
+```bash
+tmutil startbackup --auto
+```
+
 ## Notes
 
 - Ansible never formats the Seagate disk. If `nas_disk_uuid` is empty, the disk
