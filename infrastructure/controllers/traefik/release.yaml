@@ -1,0 +1,141 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: flux-system
+spec:
+  interval: 30m0s
+  releaseName: traefik
+  targetNamespace: traefik
+  chart:
+    spec:
+      chart: traefik
+      version: 40.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+      interval: 12h0m0s
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    env:
+      - name: CF_DNS_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-api-token
+            key: api-token
+
+    additionalArguments:
+      - "--certificatesresolvers.cloudflare.acme.email=whygonghui@gmail.com"
+      - "--certificatesresolvers.cloudflare.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
+
+    persistence:
+      enabled: true
+      path: /data
+      size: 1Gi
+    api:
+      dashboard: true
+
+    ingressRoute:
+      dashboard:
+        enabled: true
+        entryPoints:
+          - websecure
+        matchRule: Host(`traefik.home.hgpe.dev`)
+        tls:
+          certResolver: cloudflare
+          domains:
+            - main: home.hgpe.dev
+              sans:
+                - "*.home.hgpe.dev"
+    providers:
+      file:
+        enabled: true
+        watch: true
+        content: |-
+          http:
+            routers:
+              adguard-http:
+                rule: "Host(`adguard.home.hgpe.dev`)"
+                entryPoints:
+                  - web
+                middlewares:
+                  - redirect-to-https
+                service: adguard-svc
+
+              adguard-https:
+                rule: "Host(`adguard.home.hgpe.dev`)"
+                entryPoints:
+                  - websecure
+                tls:
+                  certResolver: cloudflare
+                service: adguard-svc
+
+              homeassistant-http:
+                rule: "Host(`homeassistant.home.hgpe.dev`)"
+                entryPoints:
+                  - web
+                middlewares:
+                  - redirect-to-https
+                service: homeassistant-svc
+
+              homeassistant-https:
+                rule: "Host(`homeassistant.home.hgpe.dev`)"
+                entryPoints:
+                  - websecure
+                tls:
+                  certResolver: cloudflare
+                service: homeassistant-svc
+
+              pve-http:
+                rule: "Host(`pve.home.hgpe.dev`)"
+                entryPoints:
+                  - web
+                middlewares:
+                  - redirect-to-https
+                service: pve-svc
+
+              pve-https:
+                rule: "Host(`pve.home.hgpe.dev`)"
+                entryPoints:
+                  - websecure
+                tls:
+                  certResolver: cloudflare
+                service: pve-svc
+
+            middlewares:
+              redirect-to-https:
+                redirectScheme:
+                  scheme: https
+
+            services:
+              adguard-svc:
+                loadBalancer:
+                  passHostHeader: true
+                  servers:
+                    - url: "http://192.168.178.12"
+
+              homeassistant-svc:
+                loadBalancer:
+                  passHostHeader: true
+                  servers:
+                    - url: "http://192.168.178.15:8123"
+
+              pve-svc:
+                loadBalancer:
+                  passHostHeader: true
+                  serversTransport: pve-transport
+                  servers:
+                    - url: "https://192.168.178.10:8006"
+
+            serversTransports:
+              pve-transport:
+                insecureSkipVerify: true
