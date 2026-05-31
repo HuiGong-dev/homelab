@@ -4,6 +4,15 @@ This runbook installs Traefik as Flux-managed cluster infrastructure. k3s
 packaged Traefik is disabled, and the Traefik Helm release is reconciled from
 this repository.
 
+## Why Flux-managed Traefik
+
+Traefik is managed by Flux instead of the k3s packaged addon so ownership is in
+one place. The Helm chart version, values, Cloudflare DNS challenge Secret,
+dashboard route, and file-provider routes are all declared in GitOps-managed
+cluster infrastructure. This avoids the previous split where k3s installed
+Traefik while Ansible customized it by writing a `HelmChartConfig` into the k3s
+manifests directory.
+
 ## Ownership
 
 - k3s server config: `provisioning/ansible/roles/k3s_server`

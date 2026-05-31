@@ -56,6 +56,12 @@ k3s packaged Traefik is disabled for the homelab cluster in
 Traefik is installed by Flux from `infrastructure/controllers/traefik` using the
 Helm repository in `infrastructure/sources/traefik.yaml`.
 
+Traefik is Flux-managed instead of k3s-managed so the ingress controller,
+certificate resolver settings, dashboard route, file-provider routes, and
+Cloudflare token Secret all live in the same GitOps layer. This avoids the old
+split where k3s installed Traefik while Ansible customized it by writing a
+`HelmChartConfig` into the k3s manifests directory.
+
 See `docs/runbooks/install-traefik-with-flux.md` for install and verification
 steps.
 
