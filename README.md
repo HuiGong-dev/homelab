@@ -4,39 +4,59 @@ Personal platform engineering homelab running on Proxmox and Kubernetes.
 
 ## Tech stack
 
-| Area              | Tools                         | Notes                                      |
-| ----------------- | ----------------------------- | ------------------------------------------ |
-| Virtualization    | Proxmox                       | VM host for the homelab                    |
-| Provisioning      | OpenTofu                      | Declarative VM provisioning                |
-| Configuration     | Ansible                       | Host bootstrap and service configuration   |
-| Kubernetes        | k3s                           | Lightweight Kubernetes cluster             |
-| GitOps            | Flux                          | CLI-first Kubernetes reconciliation        |
-| Ingress           | Traefik                       | Flux-managed ingress controller            |
-| Secret management | SOPS + age                    | Encrypted Ansible and Kubernetes secrets   |
+| Area              | Tools      | Notes                                    |
+| ----------------- | ---------- | ---------------------------------------- |
+| Virtualization    | Proxmox    | VM host for the homelab                  |
+| Provisioning      | OpenTofu   | Declarative VM provisioning              |
+| Configuration     | Ansible    | Host bootstrap and service configuration |
+| Kubernetes        | k3s        | Lightweight Kubernetes cluster           |
+| GitOps            | Flux       | CLI-first Kubernetes reconciliation      |
+| Ingress           | Traefik    | Flux-managed ingress controller          |
+| Secret management | SOPS + age | Encrypted Ansible and Kubernetes secrets |
 
 ## Layers
 
-| Layer                  | Path                         | Purpose                                      |
-| ---------------------- | ---------------------------- | -------------------------------------------- |
-| Provisioning           | `provisioning/opentofu`      | Provision VMs on Proxmox                     |
-| Configuration          | `provisioning/ansible`       | Bootstrap Linux hosts                        |
-| Cluster entrypoints    | `clusters`                   | Per-cluster Flux bootstrap and wiring        |
-| Cluster infrastructure | `infrastructure`             | Kubernetes operators, controllers, and repos |
-| Applications           | `apps`                       | User-facing Kubernetes workloads             |
-| Documentation          | `docs`                       | Runbooks, IP table, architecture notes       |
+| Layer                  | Path                    | Purpose                                      |
+| ---------------------- | ----------------------- | -------------------------------------------- |
+| Provisioning           | `provisioning/opentofu` | Provision VMs on Proxmox                     |
+| Configuration          | `provisioning/ansible`  | Bootstrap Linux hosts                        |
+| Cluster entrypoints    | `clusters`              | Per-cluster Flux bootstrap and wiring        |
+| Cluster infrastructure | `infrastructure`        | Kubernetes operators, controllers, and repos |
+| Applications           | `apps`                  | User-facing Kubernetes workloads             |
+| Documentation          | `docs`                  | Runbooks, IP table, architecture notes       |
 
 ## GitOps
 
 Flux reconciles the Kubernetes cluster from this repository. It fits this homelab well because it has first-class SOPS + age support for encrypted secrets, is lightweight, works cleanly from the CLI, and models GitOps primitives as native Kubernetes CRDs. That makes it a good match for a platform-engineering workflow where cluster state should be declarative, inspectable, and automation-friendly.
 
-## Current services
+## What's running
 
-| Service      | URL                               | Notes                                      |
-| ------------ | --------------------------------- | ------------------------------------------ |
-| Proxmox      | `https://pve.home.hgpe.dev`       | Off-cluster service routed through Traefik |
-| Traefik      | `https://traefik.home.hgpe.dev`   | Flux-managed Traefik dashboard             |
-| AdGuard Home | `https://adguard.home.hgpe.dev`   | Local DNS                                  |
-| Paperless    | `https://paperless.home.hgpe.dev` | Document management                        |
+This homelab runs a small Proxmox-backed platform with a k3s cluster for
+GitOps-managed workloads and a few dedicated VMs for services that are better
+kept close to the LAN or their appliance OS.
+
+| System            | Address          | Managed by        | Purpose                                |
+| ----------------- | ---------------- | ----------------- | -------------------------------------- |
+| Proxmox host      | `192.168.178.10` | Manual            | VM host for the homelab                |
+| AdGuard Home VM   | `192.168.178.12` | OpenTofu, Ansible | Local DNS and LAN service discovery    |
+| k3s server VM     | `192.168.178.13` | OpenTofu, Ansible | Kubernetes control-plane node          |
+| k3s agent VM      | `192.168.178.14` | OpenTofu, Ansible | Kubernetes worker node                 |
+| Home Assistant VM | `192.168.178.15` | Manual            | HAOS appliance VM for home automation  |
+| nas-vm            | `192.168.178.16` | OpenTofu, Ansible | Samba NAS for backups and shared files |
+
+## Service endpoints
+
+These endpoints are local-only and are not exposed to the public internet.
+Remote access currently goes through Tailscale into the home network.
+
+| Service        | Access                                | Notes                                               |
+| -------------- | ------------------------------------- | --------------------------------------------------- |
+| Proxmox        | `https://pve.home.hgpe.dev`           | Off-cluster service routed through Traefik          |
+| Traefik        | `https://traefik.home.hgpe.dev`       | Flux-managed Traefik dashboard                      |
+| AdGuard Home   | `https://adguard.home.hgpe.dev`       | Local DNS                                           |
+| Home Assistant | `https://homeassistant.home.hgpe.dev` | HAOS VM routed through Traefik                      |
+| Paperless      | `https://paperless.home.hgpe.dev`     | Document management on k3s                          |
+| NAS shares     | `smb://nasfiles@192.168.178.16`       | `Shared`, `TimeMachine`, and `HomeAssistantBackups` |
 
 ## Secret management
 
