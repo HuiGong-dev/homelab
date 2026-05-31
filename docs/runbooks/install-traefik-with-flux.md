@@ -85,7 +85,20 @@ infrastructure/controllers/traefik/values-configmap.yaml
 The ConfigMap has `reconcile.fluxcd.io/watch: Enabled`, so Flux's
 helm-controller should react quickly when the referenced values change.
 
-## 4. Reconcile with Flux
+## 4. Drift detection
+
+The Traefik HelmRelease enables Flux Helm drift detection:
+
+```yaml
+driftDetection:
+  mode: enabled
+```
+
+This makes Flux detect and correct manual changes to resources managed by the
+Traefik Helm release. Make normal changes in `release.yaml` or
+`values-configmap.yaml`, not with `kubectl edit` on Helm-managed resources.
+
+## 5. Reconcile with Flux
 
 Commit and push the repository changes, then reconcile Flux:
 
@@ -101,7 +114,7 @@ flux get sources helm -n flux-system
 flux get helmreleases -n flux-system
 ```
 
-## 5. Verify Traefik
+## 6. Verify Traefik
 
 Check the namespace resources:
 
@@ -126,7 +139,7 @@ curl -I https://adguard.home.hgpe.dev
 curl -I https://pve.home.hgpe.dev
 ```
 
-## 6. Let's Encrypt notes
+## 7. Let's Encrypt notes
 
 The Flux-managed install uses its own Traefik namespace and persistent volume,
 so it may not reuse the old k3s packaged Traefik `acme.json`. On first install,
@@ -146,7 +159,7 @@ For a dry run against Let's Encrypt staging, temporarily add this argument to
 
 Remove the staging CA argument before issuing production certificates.
 
-## 7. Rollback
+## 8. Rollback
 
 If Flux-managed Traefik needs to be backed out, suspend or remove the
 HelmRelease first:
