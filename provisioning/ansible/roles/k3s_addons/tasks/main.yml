@@ -8,6 +8,7 @@
       cloudflare_api_token is missing. Add it to the SOPS inventory vars file
       before running this role.
   no_log: true
+  when: k3s_builtin_traefik_enabled | bool
 
 - name: Wait for Kubernetes API
   ansible.builtin.command:
@@ -26,6 +27,12 @@
     group: root
     mode: "0755"
 
+- name: Remove Traefik HelmChartConfig manifest
+  ansible.builtin.file:
+    path: "{{ k3s_traefik_config_path }}"
+    state: absent
+  when: not (k3s_builtin_traefik_enabled | bool)
+
 - name: Apply Cloudflare API token Secret
   ansible.builtin.command:
     cmd: /usr/local/bin/k3s kubectl apply -f -
@@ -43,6 +50,7 @@
     'created' in cloudflare_secret_apply.stdout
     or 'configured' in cloudflare_secret_apply.stdout
   no_log: true
+  when: k3s_builtin_traefik_enabled | bool
 
 - name: Install Traefik HelmChartConfig manifest
   ansible.builtin.template:
@@ -51,6 +59,7 @@
     owner: root
     group: root
     mode: "0644"
+  when: k3s_builtin_traefik_enabled | bool
 
 - name: Install system-upgrade-controller CRDs
   ansible.builtin.command:
@@ -102,3 +111,4 @@
   until: traefik_rollout.rc == 0
   retries: 3
   delay: 10
+  when: k3s_builtin_traefik_enabled | bool
