@@ -11,8 +11,8 @@ Personal platform engineering homelab running on Proxmox and Kubernetes.
 | Configuration     | Ansible                       | Host bootstrap and service configuration   |
 | Kubernetes        | k3s                           | Lightweight Kubernetes cluster             |
 | GitOps            | Flux                          | CLI-first Kubernetes reconciliation        |
-| Ingress           | Traefik                       | k3s built-in ingress controller            |
-| Secret management | SOPS + age                    | Encrypted Ansible inventory secrets        |
+| Ingress           | Traefik                       | Flux-managed ingress controller            |
+| Secret management | SOPS + age                    | Encrypted Ansible and Kubernetes secrets   |
 
 ## Layers
 
@@ -34,7 +34,7 @@ Flux reconciles the Kubernetes cluster from this repository. It fits this homela
 | Service      | URL                               | Notes                                      |
 | ------------ | --------------------------------- | ------------------------------------------ |
 | Proxmox      | `https://pve.home.hgpe.dev`       | Off-cluster service routed through Traefik |
-| Traefik      | `https://traefik.home.hgpe.dev`   | k3s built-in Traefik                       |
+| Traefik      | `https://traefik.home.hgpe.dev`   | Flux-managed Traefik dashboard             |
 | AdGuard Home | `https://adguard.home.hgpe.dev`   | Local DNS                                  |
 | Paperless    | `https://paperless.home.hgpe.dev` | Document management                        |
 
@@ -43,9 +43,21 @@ Flux reconciles the Kubernetes cluster from this repository. It fits this homela
 Secrets are committed as encrypted YAML with SOPS and age.
 
 - `.sops.yaml` defines the age recipient used for `*.sops.yml` files.
+- Kubernetes Secret manifests under `apps/` and `infrastructure/` encrypt only
+  `data` and `stringData`, leaving Kubernetes object metadata readable.
 - `provisioning/ansible/ansible.cfg` enables the `community.sops.sops` vars plugin.
 - `provisioning/ansible/inventories/homelab/group_vars/all.sops.yml` stores encrypted inventory values such as Cloudflare, Tailscale, and k3s credentials.
 - Ansible reads the local age identity from `~/.sops/age.txt`.
+
+## Ingress
+
+k3s packaged Traefik is disabled for the homelab cluster in
+`provisioning/ansible/inventories/homelab/group_vars/k3s_servers.yml`.
+Traefik is installed by Flux from `infrastructure/controllers/traefik` using the
+Helm repository in `infrastructure/sources/traefik.yaml`.
+
+See `docs/runbooks/install-traefik-with-flux.md` for install and verification
+steps.
 
 ## Common commands
 

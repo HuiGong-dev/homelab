@@ -70,7 +70,8 @@ Web interface: 0.0.0.0 or 192.168.178.12
 Web port: 80 or 3000
 ```
 
-For my homelab setup, `192.168.178.12:80` is fine if Traefik routes to AdGuard Home later.
+For my homelab setup, `192.168.178.12:80` is fine because the
+Flux-managed Traefik file provider routes `adguard.home.hgpe.dev` to it.
 
 ---
 
@@ -166,6 +167,12 @@ For homelab local DNS:
 dig pve.home.hgpe.dev @192.168.178.12
 dig adguard.home.hgpe.dev @192.168.178.12
 dig traefik.home.hgpe.dev @192.168.178.12
+```
+
+After Flux has reconciled Traefik, check the HTTPS route:
+
+```sh
+curl -I https://adguard.home.hgpe.dev
 ```
 
 ---
