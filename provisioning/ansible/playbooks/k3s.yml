@@ -4,5 +4,6 @@
   become: true
 
   roles:
+    - disable_ipv6
     - k3s_server
     - k3s_addons

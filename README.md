@@ -85,6 +85,13 @@ split where k3s installed Traefik while Ansible customized it by writing a
 See `docs/runbooks/install-traefik-with-flux.md` for install and verification
 steps.
 
+## K3s node networking
+
+The k3s server and agent VMs are kept IPv4-only with the Ansible
+`disable_ipv6` role because the guest OS can receive IPv6 addresses that are not
+routable on the LAN. See `docs/runbooks/disable-ipv6-on-k3s-vms.md` for the
+apply and verification commands.
+
 ## Common commands
 
 ```sh

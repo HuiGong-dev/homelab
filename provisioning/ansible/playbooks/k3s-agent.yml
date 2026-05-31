@@ -4,6 +4,7 @@
   become: true
 
   roles:
+    - disable_ipv6
     - k3s_agent
 
 - name: Label k3s agent nodes
