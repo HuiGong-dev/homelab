@@ -4,3 +4,4 @@ resources:
   - namespace.yaml
   - release.yaml
   - secrets.sops.yaml
+  - values-configmap.yaml

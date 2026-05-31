@@ -19,6 +19,7 @@ manifests directory.
 - homelab k3s override: `provisioning/ansible/inventories/homelab/group_vars/k3s_servers.yml`
 - Flux Helm repository: `infrastructure/sources/traefik.yaml`
 - Flux Helm release: `infrastructure/controllers/traefik/release.yaml`
+- Traefik Helm values: `infrastructure/controllers/traefik/values-configmap.yaml`
 - Cloudflare API token Secret: `infrastructure/controllers/traefik/secrets.sops.yaml`
 
 ## 1. Disable packaged k3s Traefik
@@ -64,7 +65,27 @@ encrypt it:
 sops -e -i infrastructure/controllers/traefik/secrets.sops.yaml
 ```
 
-## 3. Reconcile with Flux
+## 3. Manage Helm values
+
+The HelmRelease references the chart values from a ConfigMap:
+
+```yaml
+valuesFrom:
+  - kind: ConfigMap
+    name: traefik-values
+    valuesKey: values.yaml
+```
+
+Edit Traefik chart values in:
+
+```text
+infrastructure/controllers/traefik/values-configmap.yaml
+```
+
+The ConfigMap has `reconcile.fluxcd.io/watch: Enabled`, so Flux's
+helm-controller should react quickly when the referenced values change.
+
+## 4. Reconcile with Flux
 
 Commit and push the repository changes, then reconcile Flux:
 
@@ -80,7 +101,7 @@ flux get sources helm -n flux-system
 flux get helmreleases -n flux-system
 ```
 
-## 4. Verify Traefik
+## 5. Verify Traefik
 
 Check the namespace resources:
 
@@ -105,7 +126,7 @@ curl -I https://adguard.home.hgpe.dev
 curl -I https://pve.home.hgpe.dev
 ```
 
-## 5. Let's Encrypt notes
+## 6. Let's Encrypt notes
 
 The Flux-managed install uses its own Traefik namespace and persistent volume,
 so it may not reuse the old k3s packaged Traefik `acme.json`. On first install,
@@ -117,7 +138,7 @@ home.hgpe.dev
 ```
 
 For a dry run against Let's Encrypt staging, temporarily add this argument to
-the HelmRelease values:
+`infrastructure/controllers/traefik/values-configmap.yaml`:
 
 ```yaml
 - "--certificatesresolvers.cloudflare.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
@@ -125,7 +146,7 @@ the HelmRelease values:
 
 Remove the staging CA argument before issuing production certificates.
 
-## 6. Rollback
+## 7. Rollback
 
 If Flux-managed Traefik needs to be backed out, suspend or remove the
 HelmRelease first:
