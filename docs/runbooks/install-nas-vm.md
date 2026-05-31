@@ -4,6 +4,21 @@ This runbook creates `nas-vm` in Proxmox with OpenTofu, attaches the Seagate USB
 disk manually as root, and configures Samba with Ansible. The Seagate USB disk
 is formatted manually once, then mounted by UUID at `/srv/nas`.
 
+## Why this exists
+
+The first attempt was the easy path: plug the disk into the router and use the
+router's built-in NAS feature. That made the router drop nearly half of local
+network packets, which is not acceptable for the homelab.
+
+The second option was to plug the disk directly into the MacBook Air and let
+Time Machine back up to it. That works, but it means using a USB-C hub, seeing
+"disk not ejected properly" alerts whenever the Mac sleeps, and keeping a loud
+disk near the desk.
+
+Putting the disk behind a small Proxmox VM turns it into local network storage:
+Time Machine can back up over SMB, Home Assistant can get a backup target later,
+and the noisy disk can live away from the Mac. One stone, two birds.
+
 ## 1. Identify the Seagate disk on Proxmox
 
 Plug the disk into the Proxmox host and identify the stable USB passthrough
