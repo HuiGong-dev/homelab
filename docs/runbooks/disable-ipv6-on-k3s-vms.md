@@ -1,11 +1,17 @@
-# Disable IPv6 on k3s VMs
+# Keep k3s nodes IPv4-only
 
-This runbook keeps the k3s nodes IPv4-only when IPv6 addresses are assigned by
-the guest OS but are not actually routable on the LAN.
+This runbook keeps the k3s nodes effectively IPv4-only when IPv6 addresses are
+assigned by the guest OS but are not actually routable on the LAN.
 
 The `disable_ipv6` Ansible role writes `/etc/sysctl.d/99-disable-ipv6.conf` and
 applies it immediately with `sysctl -p`. It is included only in the k3s server
 and k3s agent playbooks, so other homelab VMs keep their existing IPv6 behavior.
+
+Host-level IPv6 disablement is not enough by itself. Kubernetes workloads can
+still receive AAAA DNS answers and attempt IPv6 paths, so AdGuard Home also
+handles this at the DNS layer. AAAA queries from the k3s nodes are answered with
+`NOERROR` and no IPv6 records. Other VMs and LAN devices can still receive AAAA
+records and use IPv6 normally.
 
 ## Apply
 
@@ -37,3 +43,8 @@ On the k3s server:
 
 If an already-running System Upgrade Controller pod keeps stale network state,
 restart the deployment after applying the playbooks.
+
+## Verify k3s DNS behavior
+
+From a k3s node, AAAA lookups through AdGuard Home should return `NOERROR` with
+no IPv6 answer. A records should still resolve normally.

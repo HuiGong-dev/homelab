@@ -87,10 +87,37 @@ steps.
 
 ## K3s node networking
 
-The k3s server and agent VMs are kept IPv4-only with the Ansible
+The k3s server and agent VMs disable IPv6 at the host level with the Ansible
 `disable_ipv6` role because the guest OS can receive IPv6 addresses that are not
-routable on the LAN. See `docs/runbooks/disable-ipv6-on-k3s-vms.md` for the
-apply and verification commands.
+routable on the LAN. Host-level IPv6 disablement is not enough by itself: pods
+can still receive AAAA DNS answers and attempt IPv6 paths.
+
+AdGuard Home keeps k3s effectively IPv4-only at the DNS layer. For AAAA records
+requested from the k3s nodes, AdGuard returns `NOERROR` with no IPv6 answer.
+Other VMs and LAN devices can still receive AAAA records and use IPv6 normally.
+
+See `docs/runbooks/disable-ipv6-on-k3s-vms.md` for the apply and verification
+commands.
+
+## Dependency updates
+
+Renovate runs in-cluster from `apps/renovate`. The self-hosted Renovate runtime
+configuration lives in `apps/renovate/configmap.yaml`, while repository-specific
+update rules live in `renovate.json`.
+
+Renovate tracks GitOps-managed application images, Flux Helm releases, and the
+pinned k3s upgrade target in
+`provisioning/ansible/roles/k3s_addons/defaults/main.yml`.
+
+K3s upgrades are treated differently from normal app updates. Renovate surfaces
+new K3s releases in the Dependency Dashboard and requires manual approval before
+opening a PR. K3s PRs are labeled `k3s`, `cluster-upgrade`, and
+`manual-ansible-required`.
+
+Merging a K3s version PR does not upgrade the cluster by itself. Run the Ansible
+k3s playbook to render the updated system-upgrade-controller Plan onto the k3s
+server. The controller then performs the upgrade during the configured
+maintenance window.
 
 ## Common commands
 
