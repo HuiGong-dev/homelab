@@ -6,5 +6,43 @@
       "/(^|/)infrastructure/controllers/.+/release\\.ya?ml$/",
       "/(^|/)infrastructure/sources/.+\\.ya?ml$/"
     ]
-  }
+  },
+  "customManagers": [
+    {
+      "description": [
+        "Detect the pinned K3s system-upgrade-controller target version in Ansible."
+      ],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)provisioning/ansible/roles/k3s_addons/defaults/main\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "k3s_upgrade_version:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+\\+k3s\\d+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "k3s-io/k3s",
+      "versioningTemplate": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\+k3s(?<build>\\d+)$"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": [
+        "Surface K3s upgrades in the Dependency Dashboard, but wait for manual approval before creating a PR."
+      ],
+      "matchDatasources": [
+        "github-releases"
+      ],
+      "matchPackageNames": [
+        "k3s-io/k3s"
+      ],
+      "dependencyDashboardApproval": true,
+      "addLabels": [
+        "k3s",
+        "cluster-upgrade",
+        "manual-ansible-required"
+      ],
+      "commitMessageTopic": "k3s",
+      "automerge": false
+    }
+  ]
 }
