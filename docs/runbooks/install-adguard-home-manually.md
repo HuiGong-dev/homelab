@@ -71,7 +71,7 @@ Web port: 80 or 3000
 ```
 
 For my homelab setup, `192.168.178.12:80` is fine because the
-Flux-managed Traefik file provider routes `adguard.home.hgpe.dev` to it.
+Flux-managed Traefik `IngressRoute` routes `adguard.home.hgpe.dev` to it.
 
 ---
 

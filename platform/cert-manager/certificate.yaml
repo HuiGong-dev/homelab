@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: home-hgpe-dev-wildcard
+  namespace: traefik
+spec:
+  secretName: home-hgpe-dev-wildcard-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  dnsNames:
+    - home.hgpe.dev
+    - "*.home.hgpe.dev"

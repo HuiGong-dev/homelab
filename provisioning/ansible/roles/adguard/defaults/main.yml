@@ -42,15 +42,18 @@ adguard_filters:
     id: 2
 
 adguard_rewrites:
-  - domain: pve.home.hgpe.dev
-    answer: 192.168.178.11
+  - domain: mba.lan
+    answer: 192.168.178.100
     enabled: true
-  - domain: paperless.home.hgpe.dev
-    answer: 192.168.178.11
+  - domain: router.lan
+    answer: 192.168.178.1
     enabled: true
-  - domain: adguard.home.hgpe.dev
-    answer: 192.168.178.11
+  - domain: printer.lan
+    answer: 192.168.178.30
     enabled: true
-  - domain: "*.home.hgpe.dev"
-    answer: 192.168.178.11
+  - domain: pve.lan
+    answer: 192.168.178.10
+    enabled: true
+  - domain: adguard.lan
+    answer: 192.168.178.12
     enabled: true

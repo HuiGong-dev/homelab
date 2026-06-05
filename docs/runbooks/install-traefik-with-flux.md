@@ -8,7 +8,7 @@ this repository.
 
 Traefik is managed by Flux instead of the k3s packaged addon so ownership is in
 one place. The Helm chart version, values, Cloudflare DNS challenge Secret,
-dashboard route, and file-provider routes are all declared in GitOps-managed
+dashboard route, and off-cluster routes are all declared in GitOps-managed
 cluster infrastructure. This avoids the previous split where k3s installed
 Traefik while Ansible customized it by writing a `HelmChartConfig` into the k3s
 manifests directory.
@@ -20,7 +20,9 @@ manifests directory.
 - Flux Helm repository: `infrastructure/sources/traefik.yaml`
 - Flux Helm release: `infrastructure/controllers/traefik/release.yaml`
 - Traefik Helm values: `infrastructure/controllers/traefik/values-configmap.yaml`
-- Cloudflare API token Secret: `infrastructure/controllers/traefik/secrets.sops.yaml`
+- cert-manager Helm release: `infrastructure/controllers/cert-manager/release.yaml`
+- Cloudflare API token Secret: `infrastructure/controllers/cert-manager/secrets.sops.yaml`
+- TLS and routing resources: `platform/`
 
 ## 1. Disable packaged k3s Traefik
 
@@ -42,7 +44,7 @@ old Ansible-managed Traefik `HelmChartConfig` manifest.
 
 ## 2. Manage the Cloudflare API token
 
-The Traefik chart reads the Cloudflare DNS challenge token from this Secret:
+cert-manager reads the Cloudflare DNS-01 token from this Secret:
 
 ```text
 cloudflare-api-token
@@ -51,7 +53,7 @@ cloudflare-api-token
 Edit the encrypted Secret with SOPS:
 
 ```sh
-sops infrastructure/controllers/traefik/secrets.sops.yaml
+sops infrastructure/controllers/cert-manager/secrets.sops.yaml
 ```
 
 For Kubernetes Secret manifests under `apps/` and `infrastructure/`, `.sops.yaml`
@@ -62,7 +64,7 @@ If creating a new Kubernetes Secret file, write the plain manifest first, then
 encrypt it:
 
 ```sh
-sops -e -i infrastructure/controllers/traefik/secrets.sops.yaml
+sops -e -i infrastructure/controllers/cert-manager/secrets.sops.yaml
 ```
 
 ## 3. Manage Helm values
@@ -105,12 +107,14 @@ Commit and push the repository changes, then reconcile Flux:
 ```sh
 flux reconcile source git flux-system -n flux-system
 flux reconcile kustomization infrastructure -n flux-system --with-source
+flux reconcile kustomization platform-config -n flux-system --with-source
 ```
 
 Check the Helm source and release:
 
 ```sh
 flux get sources helm -n flux-system
+flux get sources oci -n flux-system
 flux get helmreleases -n flux-system
 ```
 
@@ -122,6 +126,8 @@ Check the namespace resources:
 kubectl -n traefik get pods,svc,pvc,secret
 kubectl -n flux-system get helmrelease traefik
 kubectl -n traefik rollout status deployment/traefik --timeout=300s
+kubectl get clusterissuer
+kubectl -n traefik get certificate home-hgpe-dev-wildcard
 ```
 
 Check logs if the HelmRelease is not ready:
@@ -141,23 +147,22 @@ curl -I https://pve.home.hgpe.dev
 
 ## 7. Let's Encrypt notes
 
-The Flux-managed install uses its own Traefik namespace and persistent volume,
-so it may not reuse the old k3s packaged Traefik `acme.json`. On first install,
-expect Traefik to request a fresh certificate for:
+cert-manager, not Traefik, owns Let's Encrypt. The wildcard Certificate is
+intentionally configured for staging validation first:
 
 ```text
 home.hgpe.dev
 *.home.hgpe.dev
 ```
 
-For a dry run against Let's Encrypt staging, temporarily add this argument to
-`infrastructure/controllers/traefik/values-configmap.yaml`:
+After staging succeeds, switch the Certificate issuer manually by changing:
 
 ```yaml
-- "--certificatesresolvers.cloudflare.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+issuerRef:
+  name: letsencrypt-prod
 ```
 
-Remove the staging CA argument before issuing production certificates.
+Do not re-enable Traefik ACME or the file provider for this migration.
 
 ## 8. Rollback
 

@@ -6,8 +6,6 @@
     - name: Confirm SOPS secrets are loaded from inventory
       ansible.builtin.assert:
         that:
-          - cloudflare_api_token is defined
-          - cloudflare_api_token | length > 0
           - tailscale_auth_key is defined
           - tailscale_auth_key | length > 0
           - k3s_token is defined
