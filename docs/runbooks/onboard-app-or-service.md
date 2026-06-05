@@ -55,6 +55,19 @@ flowchart TD
     TLSStore -. default certificate .-> Traefik
 ```
 
+The platform uses a centralized wildcard certificate for `*.home.hgpe.dev`.
+The certificate is issued by cert-manager and stored as a TLS Secret in the
+Traefik namespace. Traefik consumes this Secret through its default TLSStore.
+
+Application routes do not copy or reference the wildcard Secret directly.
+They only enable TLS on their Ingress or IngressRoute resources. This keeps
+certificate ownership centralized and avoids duplicating private keys across
+application namespaces.
+
+DNS records are generated automatically by ExternalDNS from Ingress and
+IngressRoute resources and written to AdGuard Home. This removes the need for
+manual DNS rewrites during service onboarding.
+
 ## 1. Pick the route pattern
 
 Use a standard Kubernetes `Ingress` for simple in-cluster HTTP apps.
