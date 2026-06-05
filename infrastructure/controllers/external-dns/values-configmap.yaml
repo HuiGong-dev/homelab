@@ -1,0 +1,59 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: external-dns-values
+  namespace: flux-system
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+data:
+  values.yaml: |-
+    sources:
+      - ingress
+    domainFilters:
+      - home.hgpe.dev
+    annotationFilter: external-dns.alpha.kubernetes.io/enabled=true
+    registry: txt
+    txtOwnerId: homelab-k3s
+    policy: upsert-only
+
+    provider: 
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/muhlba91/external-dns-provider-adguard
+          tag: v11.1.1
+        service:
+          port: 8888
+        livenessProbe: 
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe: 
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        env:
+          - name: ADGUARD_URL
+            valueFrom:
+              secretKeyRef:
+                name: adguard-configuration
+                key: url
+          - name: ADGUARD_USER
+            valueFrom:
+              secretKeyRef:
+                name: adguard-configuration
+                key: user
+          - name: ADGUARD_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: adguard-configuration
+                key: password
+          - name: LOG_LEVEL
+            value: debug
+          - name: DRY_RUN
+            value: "false"
