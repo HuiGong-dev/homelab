@@ -10,6 +10,7 @@ data:
   values.yaml: |-
     sources:
       - ingress
+      - traefik-proxy
     domainFilters:
       - home.hgpe.dev
     annotationFilter: external-dns.alpha.kubernetes.io/enabled=true
