@@ -26,6 +26,8 @@ manifests directory.
 
 For day-to-day app and service routing, use
 `docs/runbooks/onboard-app-or-service.md`.
+For DNS, certificate, and Traefik routing failures, use
+`docs/runbooks/troubleshoot-routing-dns-tls.md`.
 
 ## 1. Disable packaged k3s Traefik
 

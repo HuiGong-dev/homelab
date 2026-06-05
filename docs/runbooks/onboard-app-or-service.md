@@ -13,6 +13,9 @@ The current ownership model is:
 Do not add Traefik ACME configuration or Traefik file-provider routes for new
 services.
 
+If a route does not resolve, does not serve the expected certificate, or cannot
+reach the backend, use `docs/runbooks/troubleshoot-routing-dns-tls.md`.
+
 ## Flow
 
 ```mermaid

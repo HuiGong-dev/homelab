@@ -2,7 +2,9 @@
 
 ## Status
 
-Proposed
+Accepted
+
+The decision has been implemented and validated using Flux, cert-manager, Traefik `IngressRoute`, ExternalDNS, and AdGuard Home.
 
 ## Date
 
@@ -250,3 +252,14 @@ Use:
 Do not keep Traefik ACME as a second certificate management system after cert-manager migration.
 
 Do not use Traefik file provider for new off-cluster service routing unless there is a specific exception.
+
+## Implementation Notes
+
+This decision has been implemented with:
+
+- cert-manager issuing a wildcard certificate for `*.home.hgpe.dev`
+- the wildcard TLS Secret stored in the `traefik` namespace
+- Traefik consuming the wildcard certificate through the default `TLSStore`
+- ExternalDNS creating DNS records from `Ingress` and `IngressRoute` resources
+- off-cluster services modeled with `Service` and `EndpointSlice`
+- all resources reconciled through Flux
