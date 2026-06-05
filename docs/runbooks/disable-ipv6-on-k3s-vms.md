@@ -13,6 +13,16 @@ handles this at the DNS layer. AAAA queries from the k3s nodes are answered with
 `NOERROR` and no IPv6 records. Other VMs and LAN devices can still receive AAAA
 records and use IPv6 normally.
 
+## Update
+
+AdGuard Home previously used a custom AAAA DNS rewrite to return empty NOERROR
+responses for k3s nodes. That rule was removed because the ExternalDNS AdGuard
+webhook manages AdGuard rewrite rules and expects ownership of that surface.
+
+IPv6 is currently disabled on the k3s host VMs instead. Existing pods may need
+to be restarted after applying the host sysctls because pod network namespaces
+can retain previous IPv6 behavior.
+
 ## Apply
 
 From `provisioning/ansible`:

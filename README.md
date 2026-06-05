@@ -85,20 +85,6 @@ split where k3s installed Traefik while Ansible customized it by writing a
 See `docs/runbooks/install-traefik-with-flux.md` for install and verification
 steps.
 
-## K3s node networking
-
-The k3s server and agent VMs disable IPv6 at the host level with the Ansible
-`disable_ipv6` role because the guest OS can receive IPv6 addresses that are not
-routable on the LAN. Host-level IPv6 disablement is not enough by itself: pods
-can still receive AAAA DNS answers and attempt IPv6 paths.
-
-AdGuard Home keeps k3s effectively IPv4-only at the DNS layer. For AAAA records
-requested from the k3s nodes, AdGuard returns `NOERROR` with no IPv6 answer.
-Other VMs and LAN devices can still receive AAAA records and use IPv6 normally.
-
-See `docs/runbooks/disable-ipv6-on-k3s-vms.md` for the apply and verification
-commands.
-
 ## Dependency updates
 
 Renovate runs in-cluster from `apps/renovate`. The self-hosted Renovate runtime
