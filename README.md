@@ -114,6 +114,37 @@ new K3s releases in the Dependency Dashboard and requires manual approval before
 opening a PR. K3s PRs are labeled `k3s`, `cluster-upgrade`, and
 `manual-ansible-required`.
 
+K3s update flow:
+
+```mermaid
+flowchart TD
+    releases["k3s-io/k3s GitHub releases"]
+    renovate["Renovate scans k3s_upgrade_version"]
+    dashboard["Dependency Dashboard item"]
+    approve{"Approve K3s update?"}
+    wait["No PR yet"]
+    pr["Renovate opens K3s PR"]
+    merge["Review and merge version bump"]
+    ansible["Run Ansible k3s playbook"]
+    plan["Render system-upgrade-controller Plan"]
+    window["Configured maintenance window"]
+    upgrade["Controller upgrades k3s nodes"]
+    verify["Verify nodes and workloads"]
+
+    releases --> renovate
+    renovate --> dashboard
+    dashboard --> approve
+    approve -- "Not yet" --> wait
+    wait --> dashboard
+    approve -- "Yes" --> pr
+    pr --> merge
+    merge --> ansible
+    ansible --> plan
+    plan --> window
+    window --> upgrade
+    upgrade --> verify
+```
+
 Merging a K3s version PR does not upgrade the cluster by itself. Run the Ansible
 k3s playbook to render the updated system-upgrade-controller Plan onto the k3s
 server. The controller then performs the upgrade during the configured
