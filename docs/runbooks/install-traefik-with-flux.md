@@ -24,6 +24,9 @@ manifests directory.
 - Cloudflare API token Secret: `infrastructure/controllers/cert-manager/secrets.sops.yaml`
 - TLS and routing resources: `platform/`
 
+For day-to-day app and service routing, use
+`docs/runbooks/onboard-app-or-service.md`.
+
 ## 1. Disable packaged k3s Traefik
 
 Confirm the homelab k3s server group disables the packaged Traefik addon:
