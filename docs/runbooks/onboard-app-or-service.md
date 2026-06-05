@@ -21,9 +21,10 @@ flowchart TD
         Git[Git repository] --> Flux[Flux reconciliation]
 
         Flux --> Apps[apps/* in-cluster workloads]
-        Flux --> Platform[platform/* routing and TLS resources]
+        Flux --> Platform[platform/* ingress, DNS and TLS resources]
 
         Apps --> Ingress[Standard Kubernetes Ingress]
+
         Platform --> ExternalService[Service + EndpointSlice for off-cluster backend]
         ExternalService --> IngressRoute[Traefik IngressRoute]
 
@@ -32,8 +33,9 @@ flowchart TD
 
         Platform --> CertManager[cert-manager Certificate]
         CertManager --> Cloudflare[Cloudflare DNS-01 challenge]
-        Cloudflare --> LetsEncrypt[Let's Encrypt]
-        LetsEncrypt --> WildcardSecret[traefik/home-hgpe-dev-wildcard-tls]
+        CertManager --> LetsEncrypt[Let's Encrypt ACME]
+        LetsEncrypt --> CertManager
+        CertManager --> WildcardSecret[traefik/home-hgpe-dev-wildcard-tls]
         WildcardSecret --> TLSStore[Traefik default TLSStore]
 
         Ingress --> ExternalDNS[ExternalDNS]
@@ -86,8 +88,8 @@ metadata:
   namespace: example
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    external-dns.alpha.kubernetes.io/enabled: "true"
+    traefik.ingress.kubernetes.io/router.tls: 'true'
+    external-dns.alpha.kubernetes.io/enabled: 'true'
     external-dns.alpha.kubernetes.io/hostname: example.home.hgpe.dev
 spec:
   ingressClassName: traefik
@@ -154,7 +156,7 @@ metadata:
   name: example
   namespace: networking
   annotations:
-    external-dns.alpha.kubernetes.io/enabled: "true"
+    external-dns.alpha.kubernetes.io/enabled: 'true'
     external-dns.alpha.kubernetes.io/hostname: example.home.hgpe.dev
     external-dns.alpha.kubernetes.io/target: 192.168.178.13,192.168.178.14
 spec:
