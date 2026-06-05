@@ -23,5 +23,8 @@ iso-images/
 # Ansible
 *.retry
 
-#VS Code
+# VS Code
 .vscode/
+
+# Backups
+backups/
