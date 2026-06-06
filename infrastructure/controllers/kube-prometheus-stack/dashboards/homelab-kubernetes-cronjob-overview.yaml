@@ -141,7 +141,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum(kube_cronjob_info{namespace=\"$namespace\"})",
+              "expr": "sum(kube_cronjob_info{namespace=~\"$namespace\"})",
               "format": "table",
               "instant": false,
               "interval": "",
@@ -208,7 +208,7 @@ data:
           "pluginVersion": "7.5.2",
           "targets": [
             {
-              "expr": "sum(kube_cronjob_spec_suspend{namespace=\"$namespace\"})",
+              "expr": "sum(kube_cronjob_spec_suspend{namespace=~\"$namespace\"})",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -273,7 +273,7 @@ data:
           "pluginVersion": "7.5.2",
           "targets": [
             {
-              "expr": "sum(kube_cronjob_status_active{namespace=\"$namespace\"})",
+              "expr": "sum(kube_cronjob_status_active{namespace=~\"$namespace\"})",
               "format": "time_series",
               "instant": true,
               "interval": "",
@@ -340,7 +340,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum(kube_job_failed{namespace=\"$namespace\"})",
+              "expr": "sum(kube_job_failed{namespace=~\"$namespace\"})",
               "format": "time_series",
               "instant": false,
               "interval": "",
@@ -410,7 +410,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "count(kube_job_status_succeeded{namespace=\"$namespace\"}==1)",
+              "expr": "count(kube_job_status_succeeded{namespace=~\"$namespace\"}==1)",
               "format": "table",
               "instant": false,
               "interval": "",
@@ -479,7 +479,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "count(kube_job_failed{namespace=\"$namespace\"}==1)",
+              "expr": "count(kube_job_failed{namespace=~\"$namespace\"}==1)",
               "format": "table",
               "hide": false,
               "instant": false,
@@ -493,7 +493,7 @@ data:
             },
             {
               "exemplar": true,
-              "expr": "count(kube_job_status_succeeded{namespace=\"$namespace\"}==1)",
+              "expr": "count(kube_job_status_succeeded{namespace=~\"$namespace\"}==1)",
               "format": "table",
               "hide": false,
               "instant": false,
@@ -597,7 +597,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "topk(1,(kube_cronjob_info{namespace=\"$namespace\",cronjob=\"$cronjob\"}))",
+              "expr": "topk(1,(kube_cronjob_info{namespace=~\"$namespace\",cronjob=~\"$cronjob\"}))",
               "format": "table",
               "instant": false,
               "interval": "",
@@ -667,7 +667,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum by (owner_name)\n(\n  kube_job_status_active{namespace=\"$namespace\"} * on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=\"$cronjob\"}))\n  \n)",
+              "expr": "sum by (owner_name)\n(\n  kube_job_status_active{namespace=~\"$namespace\"} * on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=~\"$cronjob\"}))\n  \n)",
               "format": "time_series",
               "hide": false,
               "instant": true,
@@ -758,7 +758,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "max by (owner_name)\n(\n  max by(job_name )\n   (\n     kube_job_status_completion_time{namespace=\"$namespace\"} - on (job_name)\n       kube_job_created{namespace=\"$namespace\"} \n   ) * on (job_name)\n   \n    group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=\"$cronjob\"}))\n\n)  \n\n",
+              "expr": "max by (owner_name)\n(\n  max by(job_name )\n   (\n     kube_job_status_completion_time{namespace=~\"$namespace\"} - on (job_name)\n       kube_job_created{namespace=~\"$namespace\"} \n   ) * on (job_name)\n   \n    group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=~\"$cronjob\"}))\n\n)  \n\n",
               "format": "time_series",
               "instant": false,
               "interval": "",
@@ -829,7 +829,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "avg by (owner_name)\n(\n  max by(job_name )\n   (\n     kube_job_status_completion_time{namespace=\"$namespace\"} - on (job_name)\n       kube_job_created{namespace=\"$namespace\"} \n   ) * on (job_name)\n   \n    group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=\"$cronjob\"}))\n\n)  \n\n\n\n",
+              "expr": "avg by (owner_name)\n(\n  max by(job_name )\n   (\n     kube_job_status_completion_time{namespace=~\"$namespace\"} - on (job_name)\n       kube_job_created{namespace=~\"$namespace\"} \n   ) * on (job_name)\n   \n    group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=~\"$cronjob\"}))\n\n)  \n\n\n\n",
               "format": "table",
               "instant": false,
               "interval": "",
@@ -902,7 +902,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum by (owner_name)\n(\n  kube_job_complete{namespace=\"$namespace\"} + on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=\"$cronjob\"}))\n  \n)",
+              "expr": "sum by (owner_name)\n(\n  kube_job_complete{namespace=~\"$namespace\"} + on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=~\"$cronjob\"}))\n  \n)",
               "format": "table",
               "hide": false,
               "instant": false,
@@ -916,7 +916,7 @@ data:
             },
             {
               "exemplar": true,
-              "expr": "sum by (owner_name)\n(\n  kube_job_failed{namespace=\"$namespace\"} + on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=\"$cronjob\"}))\n  \n)",
+              "expr": "sum by (owner_name)\n(\n  kube_job_failed{namespace=~\"$namespace\"} + on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=~\"$cronjob\"}))\n  \n)",
               "format": "table",
               "hide": false,
               "instant": false,
@@ -1011,7 +1011,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "(kube_cronjob_next_schedule_time{namespace=\"$namespace\",cronjob=\"$cronjob\"}*1000)",
+              "expr": "(kube_cronjob_next_schedule_time{namespace=~\"$namespace\",cronjob=~\"$cronjob\"}*1000)",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -1087,7 +1087,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum \n(\n  kube_job_failed{namespace=\"$namespace\"} + on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=\"$cronjob\"}))\n  \n)",
+              "expr": "sum \n(\n  kube_job_failed{namespace=~\"$namespace\"} + on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=~\"$cronjob\"}))\n  \n)",
               "format": "table",
               "hide": false,
               "instant": false,
@@ -1178,7 +1178,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "min (\n  (kube_job_status_completion_time{namespace=\"$namespace\"}\n  - on (job_name)\n    kube_job_created{namespace=\"$namespace\"})\n  * on (job_name)\n    group_left(owner_name)\n      (group by (job_name,owner_name) (kube_job_owner{owner_name=\"$cronjob\"}))\n)\n\n\n\n",
+              "expr": "min (\n  (kube_job_status_completion_time{namespace=~\"$namespace\"}\n  - on (job_name)\n    kube_job_created{namespace=~\"$namespace\"})\n  * on (job_name)\n    group_left(owner_name)\n      (group by (job_name,owner_name) (kube_job_owner{owner_name=~\"$cronjob\"}))\n)\n\n\n\n",
               "format": "time_series",
               "instant": false,
               "interval": "",
@@ -1253,7 +1253,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "kube_cronjob_status_last_schedule_time{namespace=\"$namespace\",cronjob=\"$cronjob\"}*1000",
+              "expr": "kube_cronjob_status_last_schedule_time{namespace=~\"$namespace\",cronjob=~\"$cronjob\"}*1000",
               "format": "table",
               "instant": false,
               "interval": "",
@@ -1322,7 +1322,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum\n(\n  kube_job_complete{namespace=\"$namespace\"} + on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=\"$cronjob\"}))\n  \n)",
+              "expr": "sum\n(\n  kube_job_complete{namespace=~\"$namespace\"} + on (job_name)\n\n  group_left(owner_name)\n\n  (group by (job_name,owner_name) (kube_job_owner{owner_name=~\"$cronjob\"}))\n  \n)",
               "format": "time_series",
               "hide": false,
               "instant": false,
@@ -1380,7 +1380,7 @@ data:
             "type": "datasource"
           },
           {
-            "allValue": null,
+            "allValue": ".*",
             "current": {},
             "datasource": {
               "type": "prometheus",
@@ -1390,9 +1390,9 @@ data:
             "description": null,
             "error": null,
             "hide": 0,
-            "includeAll": false,
-            "label": null,
-            "multi": false,
+            "includeAll": true,
+            "label": "Namespace",
+            "multi": true,
             "name": "namespace",
             "options": [],
             "query": {
@@ -1410,13 +1410,13 @@ data:
             "useTags": false
           },
           {
-            "allValue": null,
+            "allValue": ".*",
             "current": {},
             "datasource": {
               "type": "prometheus",
               "uid": "${datasource}"
             },
-            "definition": "label_values(kube_cronjob_info{namespace=\"$namespace\"},cronjob)",
+            "definition": "label_values(kube_cronjob_info{namespace=~\"$namespace\"},cronjob)",
             "description": null,
             "error": null,
             "hide": 0,
@@ -1426,7 +1426,7 @@ data:
             "name": "cronjob",
             "options": [],
             "query": {
-              "query": "label_values(kube_cronjob_info{namespace=\"$namespace\"},cronjob)",
+              "query": "label_values(kube_cronjob_info{namespace=~\"$namespace\"},cronjob)",
               "refId": "StandardVariableQuery"
             },
             "refresh": 2,
