@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: grafana-dashboard-kubernetes-pv-overview
+  name: grafana-dashboard-homelab-kubernetes-storage-overview
   namespace: monitoring
   labels:
     grafana_dashboard: "1"
 data:
-  kubernetes-persistent-volumes-overview.json: |-
+  homelab-kubernetes-storage-overview.json: |-
     {
       "annotations": {
         "list": [
