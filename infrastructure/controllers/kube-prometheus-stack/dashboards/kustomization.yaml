@@ -6,3 +6,4 @@ resources:
   - homelab-kubernetes-global.yaml
   - homelab-kubernetes-namespace-overview.yaml
   - homelab-kubernetes-nodes-overview.yaml
+  - homelab-kubernetes-pods-overview.yaml
