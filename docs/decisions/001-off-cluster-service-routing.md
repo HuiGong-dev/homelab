@@ -60,6 +60,13 @@ cert-manager-managed TLS Secret
 ExternalDNS-managed DNS record
 ```
 
+The `Service` should use the default `ClusterIP` type with an explicit
+`EndpointSlice`, rather than `ExternalName`, when the backend is a known LAN IP.
+This gives Traefik a normal Kubernetes Service backed by explicit endpoints.
+`ExternalName` should be reserved for external services that already have a
+stable DNS name managed outside the cluster, because it acts as a DNS alias
+rather than as a Service with Kubernetes-managed endpoint data.
+
 For example, an off-cluster Proxmox service can be modeled as:
 
 ```yaml
