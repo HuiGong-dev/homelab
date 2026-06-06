@@ -16,6 +16,17 @@ data:
       - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
       - "--entryPoints.web.http.redirections.entryPoint.permanent=true"
 
+    metrics:
+      prometheus:
+        addRoutersLabels: true
+        buckets: "0.005,0.01,0.025,0.05,0.1,0.25,0.5,1.0,2.5,5.0,10.0"
+        headerLabels:
+          host: X-Forwarded-Host
+        service:
+          enabled: true
+        serviceMonitor:
+          enabled: true
+
     ingressRoute:
       dashboard:
         enabled: true
