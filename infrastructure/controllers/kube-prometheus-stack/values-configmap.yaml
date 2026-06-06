@@ -49,13 +49,13 @@ data:
           - hosts:
               - grafana.home.hgpe.dev
       persistence:
-        enabled: true
-        type: pvc
-        storageClassName: local-path
-        lookupVolumeName: false
-        accessModes:
-          - ReadWriteOnce
-        size: 2Gi
+        enabled: false
+        # type: pvc
+        # storageClassName: local-path
+        # lookupVolumeName: false
+        # accessModes:
+        #   - ReadWriteOnce
+        # size: 2Gi
       sidecar:
         dashboards:
           enabled: true
