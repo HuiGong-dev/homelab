@@ -5,3 +5,4 @@ resources:
   - homelab-kubernetes-storage-overview.yaml
   - homelab-kubernetes-global.yaml
   - homelab-kubernetes-namespace-overview.yaml
+  - homelab-kubernetes-nodes-overview.yaml
