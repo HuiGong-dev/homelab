@@ -52,6 +52,7 @@ data:
         enabled: true
         type: pvc
         storageClassName: local-path
+        lookupVolumeName: false
         accessModes:
           - ReadWriteOnce
         size: 2Gi
