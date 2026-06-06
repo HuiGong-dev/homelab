@@ -7,3 +7,4 @@ resources:
   - homelab-kubernetes-namespace-overview.yaml
   - homelab-kubernetes-nodes-overview.yaml
   - homelab-kubernetes-pods-overview.yaml
+  - homelab-kubernetes-cronjob-overview.yaml
