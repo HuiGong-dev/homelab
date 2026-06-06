@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - homelab-kubernetes-overview.yaml
   - homelab-kubernetes-storage-overview.yaml
+  - homelab-kubernetes-global.yaml
