@@ -5,3 +5,4 @@ resources:
   - cert-manager
   - traefik
   - external-dns
+  - kube-prometheus-stack

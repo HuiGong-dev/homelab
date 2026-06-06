@@ -12,6 +12,7 @@ Personal platform engineering homelab running on Proxmox and Kubernetes.
 | Kubernetes        | k3s        | Lightweight Kubernetes cluster           |
 | GitOps            | Flux       | CLI-first Kubernetes reconciliation      |
 | Ingress           | Traefik    | Flux-managed ingress controller          |
+| Monitoring        | Prometheus | kube-prometheus-stack with Grafana       |
 | Secret management | SOPS + age | Encrypted Ansible and Kubernetes secrets |
 
 ## Layers
@@ -53,6 +54,7 @@ Remote access currently goes through Tailscale into the home network.
 | -------------- | ------------------------------------- | --------------------------------------------------- |
 | Proxmox        | `https://pve.home.hgpe.dev`           | Off-cluster service routed through Traefik          |
 | Traefik        | `https://traefik.home.hgpe.dev`       | Flux-managed Traefik dashboard                      |
+| Grafana        | `https://grafana.home.hgpe.dev`       | Monitoring dashboards backed by Prometheus          |
 | AdGuard Home   | `https://adguard.home.hgpe.dev`       | Local DNS                                           |
 | Home Assistant | `https://homeassistant.home.hgpe.dev` | HAOS VM routed through Traefik                      |
 | Paperless      | `https://paperless.home.hgpe.dev`     | Document management on k3s                          |
