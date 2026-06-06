@@ -572,8 +572,8 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 2,
-            "w": 4,
+            "h": 3,
+            "w": 5,
             "x": 0,
             "y": 9
           },
@@ -640,9 +640,9 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 2,
-            "w": 2,
-            "x": 4,
+            "h": 3,
+            "w": 3,
+            "x": 5,
             "y": 9
           },
           "id": 9,
@@ -734,8 +734,8 @@ data:
           },
           "gridPos": {
             "h": 3,
-            "w": 2,
-            "x": 6,
+            "w": 3,
+            "x": 8,
             "y": 9
           },
           "id": 27,
@@ -805,8 +805,8 @@ data:
           },
           "gridPos": {
             "h": 3,
-            "w": 2,
-            "x": 8,
+            "w": 3,
+            "x": 11,
             "y": 9
           },
           "id": 26,
@@ -872,9 +872,9 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 6,
-            "w": 5,
-            "x": 10,
+            "h": 9,
+            "w": 10,
+            "x": 14,
             "y": 9
           },
           "id": 22,
@@ -986,10 +986,10 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 2,
-            "w": 4,
+            "h": 3,
+            "w": 5,
             "x": 0,
-            "y": 11
+            "y": 12
           },
           "id": 20,
           "options": {
@@ -1001,8 +1001,8 @@ data:
               "calcs": [
                 "lastNotNull"
               ],
-              "fields": "/^Time$/",
-              "values": true
+              "fields": "/^Value$/",
+              "values": false
             },
             "text": {},
             "textMode": "value"
@@ -1011,7 +1011,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "(kube_cronjob_next_schedule_time{namespace=~\"$namespace\",cronjob=~\"$cronjob\"}*1000)",
+              "expr": "kube_cronjob_next_schedule_time{namespace=~\"$namespace\",cronjob=~\"$cronjob\"} * 1000",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -1023,7 +1023,7 @@ data:
               }
             }
           ],
-          "title": "Next Scheddule",
+          "title": "Next Schedule",
           "transformations": [
             {
               "id": "merge",
@@ -1061,10 +1061,10 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 2,
-            "w": 2,
-            "x": 4,
-            "y": 11
+            "h": 3,
+            "w": 3,
+            "x": 5,
+            "y": 12
           },
           "id": 23,
           "options": {
@@ -1154,8 +1154,8 @@ data:
           },
           "gridPos": {
             "h": 3,
-            "w": 2,
-            "x": 6,
+            "w": 3,
+            "x": 8,
             "y": 12
           },
           "id": 288,
@@ -1228,10 +1228,10 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 2,
-            "w": 4,
+            "h": 3,
+            "w": 5,
             "x": 0,
-            "y": 13
+            "y": 15
           },
           "id": 21,
           "options": {
@@ -1243,7 +1243,7 @@ data:
               "calcs": [
                 "lastNotNull"
               ],
-              "fields": "",
+              "fields": "/^Value$/",
               "values": false
             },
             "text": {},
@@ -1253,7 +1253,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "kube_cronjob_status_last_schedule_time{namespace=~\"$namespace\",cronjob=~\"$cronjob\"}*1000",
+              "expr": "kube_cronjob_status_last_schedule_time{namespace=~\"$namespace\",cronjob=~\"$cronjob\"} * 1000",
               "format": "table",
               "instant": false,
               "interval": "",
@@ -1265,7 +1265,7 @@ data:
               }
             }
           ],
-          "title": "Last Scheddule",
+          "title": "Last Schedule",
           "type": "stat"
         },
         {
@@ -1296,10 +1296,10 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 2,
-            "w": 2,
-            "x": 4,
-            "y": 13
+            "h": 3,
+            "w": 3,
+            "x": 5,
+            "y": 15
           },
           "id": 24,
           "options": {
