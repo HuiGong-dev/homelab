@@ -3150,6 +3150,7 @@ data:
     }
 kind: ConfigMap
 metadata:
+  namespace: monitoring
   labels:
     grafana_dashboard: "1"
   name: dashboards-k8s-views-global
