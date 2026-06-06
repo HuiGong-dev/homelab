@@ -134,7 +134,7 @@ data:
         "pluginVersion": "7.2.1",
         "targets": [
           {
-            "expr": "(\n  count (\n    (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"})\n    and\n    (predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 2 * 24 * 60 * 60) < 0)\n  )\n)\nor\nvector(0)",
+            "expr": "(\n  count(\n    max by (persistentvolumeclaim,namespace) (\n      predict_linear(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d], 2 * 24 * 60 * 60)\n    )\n    > on (persistentvolumeclaim,namespace)\n    max by (persistentvolumeclaim,namespace) (\n      kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=~\"${k8s_namespace}\"}\n    )\n  )\n)\nor\nvector(0)",
             "instant": true,
             "interval": "",
             "legendFormat": "",
@@ -143,7 +143,7 @@ data:
         ],
         "timeFrom": null,
         "timeShift": null,
-        "title": "PVCs Full in 2 days - Based on Daily Usage",
+        "title": "PVCs Over Claimed Size in 2 days - Based on Reported Usage",
         "transformations": [
           {
             "id": "organize",
@@ -208,7 +208,7 @@ data:
         "pluginVersion": "7.2.1",
         "targets": [
           {
-            "expr": "(\n  count (\n    (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"})\n    and\n    (predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 5 * 24 * 60 * 60) < 0)\n  )\n)\nor\nvector(0)",
+            "expr": "(\n  count(\n    max by (persistentvolumeclaim,namespace) (\n      predict_linear(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d], 5 * 24 * 60 * 60)\n    )\n    > on (persistentvolumeclaim,namespace)\n    max by (persistentvolumeclaim,namespace) (\n      kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=~\"${k8s_namespace}\"}\n    )\n  )\n)\nor\nvector(0)",
             "instant": true,
             "interval": "",
             "legendFormat": "",
@@ -217,7 +217,7 @@ data:
         ],
         "timeFrom": null,
         "timeShift": null,
-        "title": "PVCs Full in 5 days - Based on Daily Usage",
+        "title": "PVCs Over Claimed Size in 5 days - Based on Reported Usage",
         "transformations": [
           {
             "id": "organize",
@@ -282,7 +282,7 @@ data:
         "pluginVersion": "7.2.1",
         "targets": [
           {
-            "expr": "(\n  count (\n    (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"})\n    and\n    (predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 7 * 24 * 60 * 60) < 0)\n  )\n)\nor\nvector(0)",
+            "expr": "(\n  count(\n    max by (persistentvolumeclaim,namespace) (\n      predict_linear(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d], 7 * 24 * 60 * 60)\n    )\n    > on (persistentvolumeclaim,namespace)\n    max by (persistentvolumeclaim,namespace) (\n      kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=~\"${k8s_namespace}\"}\n    )\n  )\n)\nor\nvector(0)",
             "instant": true,
             "interval": "",
             "legendFormat": "",
@@ -291,7 +291,7 @@ data:
         ],
         "timeFrom": null,
         "timeShift": null,
-        "title": "PVCs Full in 1 Week - Based on Daily Usage",
+        "title": "PVCs Over Claimed Size in 1 Week - Based on Reported Usage",
         "transformations": [
           {
             "id": "organize",
@@ -355,7 +355,7 @@ data:
         "pluginVersion": "7.2.1",
         "targets": [
           {
-            "expr": "count (max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"} ) and (max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"} )) / (max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"} )) >= (${warning_threshold} / 100)) or vector (0)",
+            "expr": "count((max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}) / max by (persistentvolumeclaim,namespace) (kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=~\"${k8s_namespace}\"}) >= (${warning_threshold} / 100))) or vector(0)",
             "instant": true,
             "interval": "",
             "legendFormat": "",
@@ -364,7 +364,7 @@ data:
         ],
         "timeFrom": null,
         "timeShift": null,
-        "title": "PVCs Above Warning Threshold",
+        "title": "PVCs Above Warning Threshold (Reported Used / Claimed)",
         "type": "stat"
       },
       {
@@ -558,7 +558,7 @@ data:
             {
               "matcher": {
                 "id": "byName",
-                "options": "Used (%)"
+                "options": "Reported Used (%)"
               },
               "properties": [
                 {
@@ -691,7 +691,7 @@ data:
             {
               "matcher": {
                 "id": "byName",
-                "options": "Capacity (GiB)"
+                "options": "Claimed (GiB)"
               },
               "properties": [
                 {
@@ -703,19 +703,7 @@ data:
             {
               "matcher": {
                 "id": "byName",
-                "options": "Used (GiB)"
-              },
-              "properties": [
-                {
-                  "id": "custom.width",
-                  "value": 120
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "Available (GiB)"
+                "options": "Reported Used (GiB)"
               },
               "properties": [
                 {
@@ -779,7 +767,7 @@ data:
             "refId": "A"
           },
           {
-            "expr": "sum by (persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"}/1024/1024/1024)",
+            "expr": "sum by (persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=~\"${k8s_namespace}\"}/1024/1024/1024)",
             "format": "table",
             "instant": true,
             "interval": "",
@@ -795,14 +783,6 @@ data:
             "refId": "C"
           },
           {
-            "expr": "sum by (persistentvolumeclaim) (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}/1024/1024/1024)",
-            "format": "table",
-            "instant": true,
-            "interval": "",
-            "legendFormat": "",
-            "refId": "D"
-          },
-          {
             "expr": "sum(kube_persistentvolumeclaim_status_phase{namespace=~\"${k8s_namespace}\",phase=~\"(Pending|Lost)\"}) by (persistentvolumeclaim) + sum(kube_persistentvolumeclaim_status_phase{namespace=~\"${k8s_namespace}\",phase=~\"(Lost)\"}) by (persistentvolumeclaim)",
             "format": "table",
             "instant": true,
@@ -811,7 +791,7 @@ data:
             "refId": "E"
           },
           {
-            "expr": "sum by (persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}/kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"} * 100)",
+            "expr": "sum by (persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}) / sum by (persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=~\"${k8s_namespace}\"}) * 100",
             "format": "table",
             "instant": true,
             "interval": "",
@@ -851,11 +831,10 @@ data:
                 "Time 5": "",
                 "Time 6": "",
                 "Value #A": "",
-                "Value #B": "Capacity (GiB)",
-                "Value #C": "Used (GiB)",
-                "Value #D": "Available (GiB)",
+                "Value #B": "Claimed (GiB)",
+                "Value #C": "Reported Used (GiB)",
                 "Value #E": "Status",
-                "Value #F": "Used (%)",
+                "Value #F": "Reported Used (%)",
                 "namespace": "Namespace",
                 "persistentvolumeclaim": "PersistentVolumeClaim",
                 "storageclass": "StorageClass",
