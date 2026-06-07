@@ -207,6 +207,14 @@ kubectl get pods -A -o yaml | grep -B5 -A10 "<pvc-name>"
 
 Only delete resources after confirming they are no longer used.
 
+### 8. Etcd Snapshot Check
+
+Before and after a K3s upgrade, verify recent etcd snapshots:
+
+```bash
+sudo k3s etcd-snapshot list
+```
+
 ## Upgrade Plan Configuration
 
 The cluster uses two system-upgrade-controller Plans:
