@@ -74,7 +74,7 @@ module "k3s-agent-01" {
   full_clone     = true
 
   cpu_cores    = 2
-  memory_mb    = 4096
+  memory_mb    = 8192
   datastore_id = "local-lvm"
   bridge       = "vmbr0"
   disk_size_gb = 50
