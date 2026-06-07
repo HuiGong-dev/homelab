@@ -85,7 +85,7 @@ data:
           },
           "id": 11,
           "panels": [],
-          "title": "Cronjobs",
+          "title": "CronJobs and Jobs",
           "type": "row"
         },
         {
@@ -163,6 +163,76 @@ data:
             "type": "prometheus",
             "uid": "${datasource}"
           },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 3,
+            "x": 3,
+            "y": 2
+          },
+          "id": 579,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "last"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.2",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "count(kube_job_info{namespace=~\"$namespace\"} unless on(namespace,job_name) kube_job_owner{namespace=~\"$namespace\",owner_kind=\"CronJob\"})",
+              "format": "table",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              }
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Standalone Jobs",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
           "description": "Must be equal to Zero",
           "fieldConfig": {
             "defaults": {
@@ -186,7 +256,7 @@ data:
           "gridPos": {
             "h": 6,
             "w": 3,
-            "x": 3,
+            "x": 6,
             "y": 2
           },
           "id": 4,
@@ -251,7 +321,7 @@ data:
           "gridPos": {
             "h": 6,
             "w": 3,
-            "x": 6,
+            "x": 9,
             "y": 2
           },
           "id": 6,
@@ -273,7 +343,7 @@ data:
           "pluginVersion": "7.5.2",
           "targets": [
             {
-              "expr": "sum(kube_cronjob_status_active{namespace=~\"$namespace\"})",
+              "expr": "sum(kube_job_status_active{namespace=~\"$namespace\"})",
               "format": "time_series",
               "instant": true,
               "interval": "",
@@ -317,7 +387,7 @@ data:
           "gridPos": {
             "h": 6,
             "w": 3,
-            "x": 9,
+            "x": 12,
             "y": 2
           },
           "id": 577,
@@ -387,7 +457,7 @@ data:
           "gridPos": {
             "h": 6,
             "w": 3,
-            "x": 12,
+            "x": 15,
             "y": 2
           },
           "id": 578,
@@ -453,7 +523,7 @@ data:
           "gridPos": {
             "h": 6,
             "w": 6,
-            "x": 15,
+            "x": 18,
             "y": 2
           },
           "id": 8,
@@ -484,7 +554,7 @@ data:
               "hide": false,
               "instant": false,
               "interval": "",
-              "legendFormat": "{{label_cronjob_owner}}",
+              "legendFormat": "Failed",
               "refId": "Failed",
               "datasource": {
                 "type": "prometheus",
@@ -498,7 +568,7 @@ data:
               "hide": false,
               "instant": false,
               "interval": "",
-              "legendFormat": "{{label_cronjob_owner}}",
+              "legendFormat": "Succeeded",
               "refId": "Succeeded",
               "datasource": {
                 "type": "prometheus",
@@ -508,7 +578,7 @@ data:
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "CronJobs status",
+          "title": "Jobs status",
           "transformations": [
             {
               "id": "merge",
@@ -1358,6 +1428,427 @@ data:
             }
           ],
           "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 18
+          },
+          "id": 580,
+          "panels": [],
+          "repeat": "job",
+          "title": "Job Details : $job",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "dateTimeFromNow"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 0,
+            "y": 19
+          },
+          "id": 581,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^Value$/",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.2",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "kube_job_created{namespace=~\"$namespace\",job_name=~\"$job\"} * 1000",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              }
+            }
+          ],
+          "title": "Created",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 4,
+            "y": 19
+          },
+          "id": 582,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.2",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(kube_job_status_active{namespace=~\"$namespace\",job_name=~\"$job\"})",
+              "format": "time_series",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              }
+            }
+          ],
+          "title": "Running",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 8,
+            "y": 19
+          },
+          "id": 583,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "center",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.2",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(kube_job_failed{namespace=~\"$namespace\",job_name=~\"$job\"})",
+              "format": "time_series",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              }
+            }
+          ],
+          "title": "Failed",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 12,
+            "y": 19
+          },
+          "id": 584,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "center",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.2",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(kube_job_complete{namespace=~\"$namespace\",job_name=~\"$job\"})",
+              "format": "time_series",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              }
+            }
+          ],
+          "title": "Succeeded",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 16,
+            "y": 19
+          },
+          "id": 585,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.2",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "max(kube_job_status_completion_time{namespace=~\"$namespace\",job_name=~\"$job\"} - on(namespace,job_name) kube_job_created{namespace=~\"$namespace\",job_name=~\"$job\"})",
+              "format": "time_series",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              }
+            }
+          ],
+          "title": "Duration",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "dateTimeFromNow"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 4,
+            "x": 20,
+            "y": 19
+          },
+          "id": 586,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "/^Value$/",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "7.5.2",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "kube_job_status_completion_time{namespace=~\"$namespace\",job_name=~\"$job\"} * 1000",
+              "format": "table",
+              "instant": true,
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              }
+            }
+          ],
+          "title": "Completed",
+          "type": "stat"
         }
       ],
       "refresh": false,
@@ -1421,7 +1912,7 @@ data:
             "error": null,
             "hide": 0,
             "includeAll": true,
-            "label": null,
+            "label": "CronJob",
             "multi": true,
             "name": "cronjob",
             "options": [],
@@ -1438,6 +1929,36 @@ data:
             "tagsQuery": "",
             "type": "query",
             "useTags": false
+          },
+          {
+            "allValue": ".*",
+            "current": {},
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${datasource}"
+            },
+            "definition": "query_result(kube_job_info{namespace=~\"$namespace\"} unless on(namespace,job_name) kube_job_owner{namespace=~\"$namespace\",owner_kind=\"CronJob\"})",
+            "description": null,
+            "error": null,
+            "hide": 0,
+            "includeAll": true,
+            "label": "Job",
+            "multi": true,
+            "name": "job",
+            "options": [],
+            "query": {
+              "query": "query_result(kube_job_info{namespace=~\"$namespace\"} unless on(namespace,job_name) kube_job_owner{namespace=~\"$namespace\",owner_kind=\"CronJob\"})",
+              "refId": "StandardVariableQuery"
+            },
+            "refresh": 2,
+            "regex": "/.*job_name=\\\"([^\\\"]+)\\\".*/",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
           }
         ]
       },
@@ -1447,8 +1968,8 @@ data:
       },
       "timepicker": {},
       "timezone": "",
-      "title": "Homelab Kubernetes CronJob Overview",
+      "title": "Homelab Kubernetes CronJob and Job Overview",
       "uid": "homelab-kubernetes-cronjob-overview",
-      "version": 12,
-      "description": "A simple dashboard to monitor k8s cronjobs "
+      "version": 13,
+      "description": "A simple dashboard to monitor k8s CronJobs and standalone Jobs"
     }
