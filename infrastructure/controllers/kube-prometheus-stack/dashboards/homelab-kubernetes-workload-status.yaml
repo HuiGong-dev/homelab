@@ -523,6 +523,57 @@ data:
               "options": {}
             },
             {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Value #A": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #B": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #C": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #D": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #E": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #F": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "deployment": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "namespace": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            },
+            {
               "id": "organize",
               "options": {
                 "excludeByName": {
@@ -549,20 +600,20 @@ data:
                 "indexByName": {
                   "namespace": 0,
                   "deployment": 1,
-                  "Value #A": 2,
-                  "Value #B": 3,
-                  "Value #C": 4,
-                  "Value #D": 5,
-                  "Value #F": 6,
-                  "Value #E": 7
+                  "Value #A (lastNotNull)": 2,
+                  "Value #B (lastNotNull)": 3,
+                  "Value #C (lastNotNull)": 4,
+                  "Value #D (lastNotNull)": 5,
+                  "Value #F (lastNotNull)": 6,
+                  "Value #E (lastNotNull)": 7
                 },
                 "renameByName": {
-                  "Value #A": "Ready",
-                  "Value #B": "Desired",
-                  "Value #C": "Up-to-date",
-                  "Value #D": "Available",
-                  "Value #E": "Age",
-                  "Value #F": "Ready %",
+                  "Value #A (lastNotNull)": "Ready",
+                  "Value #B (lastNotNull)": "Desired",
+                  "Value #C (lastNotNull)": "Up-to-date",
+                  "Value #D (lastNotNull)": "Available",
+                  "Value #E (lastNotNull)": "Age",
+                  "Value #F (lastNotNull)": "Ready %",
                   "deployment": "Deployment",
                   "namespace": "Namespace"
                 }
@@ -744,6 +795,57 @@ data:
               "options": {}
             },
             {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Value #A": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #B": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #C": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #D": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #E": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #F": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "namespace": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "statefulset": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            },
+            {
               "id": "organize",
               "options": {
                 "excludeByName": {
@@ -770,20 +872,20 @@ data:
                 "indexByName": {
                   "namespace": 0,
                   "statefulset": 1,
-                  "Value #A": 2,
-                  "Value #B": 3,
-                  "Value #C": 4,
-                  "Value #D": 5,
-                  "Value #F": 6,
-                  "Value #E": 7
+                  "Value #A (lastNotNull)": 2,
+                  "Value #B (lastNotNull)": 3,
+                  "Value #C (lastNotNull)": 4,
+                  "Value #D (lastNotNull)": 5,
+                  "Value #F (lastNotNull)": 6,
+                  "Value #E (lastNotNull)": 7
                 },
                 "renameByName": {
-                  "Value #A": "Ready",
-                  "Value #B": "Desired",
-                  "Value #C": "Up-to-date",
-                  "Value #D": "Current",
-                  "Value #E": "Age",
-                  "Value #F": "Ready %",
+                  "Value #A (lastNotNull)": "Ready",
+                  "Value #B (lastNotNull)": "Desired",
+                  "Value #C (lastNotNull)": "Up-to-date",
+                  "Value #D (lastNotNull)": "Current",
+                  "Value #E (lastNotNull)": "Age",
+                  "Value #F (lastNotNull)": "Ready %",
                   "namespace": "Namespace",
                   "statefulset": "StatefulSet"
                 }
@@ -965,6 +1067,57 @@ data:
               "options": {}
             },
             {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Value #A": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #B": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #C": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #D": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #E": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #F": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "daemonset": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "namespace": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            },
+            {
               "id": "organize",
               "options": {
                 "excludeByName": {
@@ -991,20 +1144,20 @@ data:
                 "indexByName": {
                   "namespace": 0,
                   "daemonset": 1,
-                  "Value #A": 2,
-                  "Value #B": 3,
-                  "Value #C": 4,
-                  "Value #D": 5,
-                  "Value #F": 6,
-                  "Value #E": 7
+                  "Value #A (lastNotNull)": 2,
+                  "Value #B (lastNotNull)": 3,
+                  "Value #C (lastNotNull)": 4,
+                  "Value #D (lastNotNull)": 5,
+                  "Value #F (lastNotNull)": 6,
+                  "Value #E (lastNotNull)": 7
                 },
                 "renameByName": {
-                  "Value #A": "Ready",
-                  "Value #B": "Desired",
-                  "Value #C": "Up-to-date",
-                  "Value #D": "Available",
-                  "Value #E": "Age",
-                  "Value #F": "Ready %",
+                  "Value #A (lastNotNull)": "Ready",
+                  "Value #B (lastNotNull)": "Desired",
+                  "Value #C (lastNotNull)": "Up-to-date",
+                  "Value #D (lastNotNull)": "Available",
+                  "Value #E (lastNotNull)": "Age",
+                  "Value #F (lastNotNull)": "Ready %",
                   "daemonset": "DaemonSet",
                   "namespace": "Namespace"
                 }
@@ -1160,6 +1313,45 @@ data:
               "options": {}
             },
             {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Value #A": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #B": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #C": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "Value #D": {
+                    "aggregations": [
+                      "lastNotNull"
+                    ],
+                    "operation": "aggregate"
+                  },
+                  "namespace": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "pod": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            },
+            {
               "id": "organize",
               "options": {
                 "excludeByName": {
@@ -1181,16 +1373,16 @@ data:
                 "indexByName": {
                   "namespace": 0,
                   "pod": 1,
-                  "Value #A": 2,
-                  "Value #B": 3,
-                  "Value #C": 4,
-                  "Value #D": 5
+                  "Value #A (lastNotNull)": 2,
+                  "Value #B (lastNotNull)": 3,
+                  "Value #C (lastNotNull)": 4,
+                  "Value #D (lastNotNull)": 5
                 },
                 "renameByName": {
-                  "Value #A": "Ready Containers",
-                  "Value #B": "Total Containers",
-                  "Value #C": "Ready %",
-                  "Value #D": "Restarts 24h",
+                  "Value #A (lastNotNull)": "Ready Containers",
+                  "Value #B (lastNotNull)": "Total Containers",
+                  "Value #C (lastNotNull)": "Ready %",
+                  "Value #D (lastNotNull)": "Restarts 24h",
                   "namespace": "Namespace",
                   "pod": "Pod"
                 }
