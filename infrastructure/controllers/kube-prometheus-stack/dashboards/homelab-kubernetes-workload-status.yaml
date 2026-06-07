@@ -444,6 +444,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_deployment_status_replicas_ready{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Ready",
               "range": false,
@@ -456,6 +457,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_deployment_spec_replicas{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Desired",
               "range": false,
@@ -468,6 +470,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_deployment_status_replicas_updated{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Up-to-date",
               "range": false,
@@ -480,6 +483,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_deployment_status_replicas_available{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Available",
               "range": false,
@@ -492,6 +496,7 @@ data:
               },
               "editorMode": "code",
               "expr": "time() - kube_deployment_created{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Age",
               "range": false,
@@ -504,6 +509,7 @@ data:
               },
               "editorMode": "code",
               "expr": "100 * kube_deployment_status_replicas_ready{namespace=~\"$namespace\"} / clamp_min(kube_deployment_spec_replicas{namespace=~\"$namespace\"}, 1)",
+              "format": "table",
               "instant": true,
               "legendFormat": "Ready %",
               "range": false,
@@ -513,48 +519,50 @@ data:
           "title": "Deployments",
           "transformations": [
             {
-              "id": "labelsToFields",
-              "options": {
-                "keepLabels": [
-                  "namespace",
-                  "deployment"
-                ],
-                "mode": "columns"
-              }
-            },
-            {
-              "id": "filterFieldsByName",
-              "options": {
-                "include": {
-                  "names": [
-                    "namespace",
-                    "deployment",
-                    "Ready",
-                    "Desired",
-                    "Up-to-date",
-                    "Available",
-                    "Age",
-                    "Ready %"
-                  ]
-                }
-              }
+              "id": "merge",
+              "options": {}
             },
             {
               "id": "organize",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
+                "excludeByName": {
+                  "Time": true,
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "Time 4": true,
+                  "Time 5": true,
+                  "__name__": true,
+                  "__name__ 1": true,
+                  "__name__ 2": true,
+                  "__name__ 3": true,
+                  "__name__ 4": true,
+                  "__name__ 5": true,
+                  "container": true,
+                  "endpoint": true,
+                  "instance": true,
+                  "job": true,
+                  "pod": true,
+                  "service": true,
+                  "uid": true
+                },
                 "indexByName": {
                   "namespace": 0,
                   "deployment": 1,
-                  "Ready": 2,
-                  "Desired": 3,
-                  "Up-to-date": 4,
-                  "Available": 5,
-                  "Ready %": 6,
-                  "Age": 7
+                  "Value #A": 2,
+                  "Value #B": 3,
+                  "Value #C": 4,
+                  "Value #D": 5,
+                  "Value #F": 6,
+                  "Value #E": 7
                 },
                 "renameByName": {
+                  "Value #A": "Ready",
+                  "Value #B": "Desired",
+                  "Value #C": "Up-to-date",
+                  "Value #D": "Available",
+                  "Value #E": "Age",
+                  "Value #F": "Ready %",
                   "deployment": "Deployment",
                   "namespace": "Namespace"
                 }
@@ -657,6 +665,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_statefulset_status_replicas_ready{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Ready",
               "range": false,
@@ -669,6 +678,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_statefulset_replicas{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Desired",
               "range": false,
@@ -681,6 +691,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_statefulset_status_replicas_updated{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Up-to-date",
               "range": false,
@@ -693,6 +704,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_statefulset_status_replicas_current{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Current",
               "range": false,
@@ -705,6 +717,7 @@ data:
               },
               "editorMode": "code",
               "expr": "time() - kube_statefulset_created{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Age",
               "range": false,
@@ -717,6 +730,7 @@ data:
               },
               "editorMode": "code",
               "expr": "100 * kube_statefulset_status_replicas_ready{namespace=~\"$namespace\"} / clamp_min(kube_statefulset_replicas{namespace=~\"$namespace\"}, 1)",
+              "format": "table",
               "instant": true,
               "legendFormat": "Ready %",
               "range": false,
@@ -726,48 +740,50 @@ data:
           "title": "StatefulSets",
           "transformations": [
             {
-              "id": "labelsToFields",
-              "options": {
-                "keepLabels": [
-                  "namespace",
-                  "statefulset"
-                ],
-                "mode": "columns"
-              }
-            },
-            {
-              "id": "filterFieldsByName",
-              "options": {
-                "include": {
-                  "names": [
-                    "namespace",
-                    "statefulset",
-                    "Ready",
-                    "Desired",
-                    "Up-to-date",
-                    "Current",
-                    "Age",
-                    "Ready %"
-                  ]
-                }
-              }
+              "id": "merge",
+              "options": {}
             },
             {
               "id": "organize",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
+                "excludeByName": {
+                  "Time": true,
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "Time 4": true,
+                  "Time 5": true,
+                  "__name__": true,
+                  "__name__ 1": true,
+                  "__name__ 2": true,
+                  "__name__ 3": true,
+                  "__name__ 4": true,
+                  "__name__ 5": true,
+                  "container": true,
+                  "endpoint": true,
+                  "instance": true,
+                  "job": true,
+                  "pod": true,
+                  "service": true,
+                  "uid": true
+                },
                 "indexByName": {
                   "namespace": 0,
                   "statefulset": 1,
-                  "Ready": 2,
-                  "Desired": 3,
-                  "Up-to-date": 4,
-                  "Current": 5,
-                  "Ready %": 6,
-                  "Age": 7
+                  "Value #A": 2,
+                  "Value #B": 3,
+                  "Value #C": 4,
+                  "Value #D": 5,
+                  "Value #F": 6,
+                  "Value #E": 7
                 },
                 "renameByName": {
+                  "Value #A": "Ready",
+                  "Value #B": "Desired",
+                  "Value #C": "Up-to-date",
+                  "Value #D": "Current",
+                  "Value #E": "Age",
+                  "Value #F": "Ready %",
                   "namespace": "Namespace",
                   "statefulset": "StatefulSet"
                 }
@@ -870,6 +886,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_daemonset_status_number_ready{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Ready",
               "range": false,
@@ -882,6 +899,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_daemonset_status_desired_number_scheduled{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Desired",
               "range": false,
@@ -894,6 +912,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_daemonset_status_updated_number_scheduled{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Up-to-date",
               "range": false,
@@ -906,6 +925,7 @@ data:
               },
               "editorMode": "code",
               "expr": "kube_daemonset_status_number_available{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Available",
               "range": false,
@@ -918,6 +938,7 @@ data:
               },
               "editorMode": "code",
               "expr": "time() - kube_daemonset_created{namespace=~\"$namespace\"}",
+              "format": "table",
               "instant": true,
               "legendFormat": "Age",
               "range": false,
@@ -930,6 +951,7 @@ data:
               },
               "editorMode": "code",
               "expr": "100 * kube_daemonset_status_number_ready{namespace=~\"$namespace\"} / clamp_min(kube_daemonset_status_desired_number_scheduled{namespace=~\"$namespace\"}, 1)",
+              "format": "table",
               "instant": true,
               "legendFormat": "Ready %",
               "range": false,
@@ -939,48 +961,50 @@ data:
           "title": "DaemonSets",
           "transformations": [
             {
-              "id": "labelsToFields",
-              "options": {
-                "keepLabels": [
-                  "namespace",
-                  "daemonset"
-                ],
-                "mode": "columns"
-              }
-            },
-            {
-              "id": "filterFieldsByName",
-              "options": {
-                "include": {
-                  "names": [
-                    "namespace",
-                    "daemonset",
-                    "Ready",
-                    "Desired",
-                    "Up-to-date",
-                    "Available",
-                    "Age",
-                    "Ready %"
-                  ]
-                }
-              }
+              "id": "merge",
+              "options": {}
             },
             {
               "id": "organize",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
+                "excludeByName": {
+                  "Time": true,
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "Time 4": true,
+                  "Time 5": true,
+                  "__name__": true,
+                  "__name__ 1": true,
+                  "__name__ 2": true,
+                  "__name__ 3": true,
+                  "__name__ 4": true,
+                  "__name__ 5": true,
+                  "container": true,
+                  "endpoint": true,
+                  "instance": true,
+                  "job": true,
+                  "pod": true,
+                  "service": true,
+                  "uid": true
+                },
                 "indexByName": {
                   "namespace": 0,
                   "daemonset": 1,
-                  "Ready": 2,
-                  "Desired": 3,
-                  "Up-to-date": 4,
-                  "Available": 5,
-                  "Ready %": 6,
-                  "Age": 7
+                  "Value #A": 2,
+                  "Value #B": 3,
+                  "Value #C": 4,
+                  "Value #D": 5,
+                  "Value #F": 6,
+                  "Value #E": 7
                 },
                 "renameByName": {
+                  "Value #A": "Ready",
+                  "Value #B": "Desired",
+                  "Value #C": "Up-to-date",
+                  "Value #D": "Available",
+                  "Value #E": "Age",
+                  "Value #F": "Ready %",
                   "daemonset": "DaemonSet",
                   "namespace": "Namespace"
                 }
@@ -1083,6 +1107,7 @@ data:
               },
               "editorMode": "code",
               "expr": "sum by (namespace, pod) (kube_pod_container_status_ready{namespace=~\"$namespace\"})",
+              "format": "table",
               "instant": true,
               "legendFormat": "Ready Containers",
               "range": false,
@@ -1095,6 +1120,7 @@ data:
               },
               "editorMode": "code",
               "expr": "count by (namespace, pod) (kube_pod_container_status_ready{namespace=~\"$namespace\"})",
+              "format": "table",
               "instant": true,
               "legendFormat": "Total Containers",
               "range": false,
@@ -1107,6 +1133,7 @@ data:
               },
               "editorMode": "code",
               "expr": "100 * sum by (namespace, pod) (kube_pod_container_status_ready{namespace=~\"$namespace\"}) / clamp_min(count by (namespace, pod) (kube_pod_container_status_ready{namespace=~\"$namespace\"}), 1)",
+              "format": "table",
               "instant": true,
               "legendFormat": "Ready %",
               "range": false,
@@ -1119,6 +1146,7 @@ data:
               },
               "editorMode": "code",
               "expr": "sum by (namespace, pod) (increase(kube_pod_container_status_restarts_total{namespace=~\"$namespace\"}[24h]))",
+              "format": "table",
               "instant": true,
               "legendFormat": "Restarts 24h",
               "range": false,
@@ -1128,44 +1156,41 @@ data:
           "title": "Pods",
           "transformations": [
             {
-              "id": "labelsToFields",
-              "options": {
-                "keepLabels": [
-                  "namespace",
-                  "pod"
-                ],
-                "mode": "columns"
-              }
-            },
-            {
-              "id": "filterFieldsByName",
-              "options": {
-                "include": {
-                  "names": [
-                    "namespace",
-                    "pod",
-                    "Ready Containers",
-                    "Total Containers",
-                    "Ready %",
-                    "Restarts 24h"
-                  ]
-                }
-              }
+              "id": "merge",
+              "options": {}
             },
             {
               "id": "organize",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
+                "excludeByName": {
+                  "Time": true,
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "__name__": true,
+                  "__name__ 1": true,
+                  "__name__ 2": true,
+                  "__name__ 3": true,
+                  "container": true,
+                  "endpoint": true,
+                  "instance": true,
+                  "job": true,
+                  "service": true,
+                  "uid": true
+                },
                 "indexByName": {
                   "namespace": 0,
                   "pod": 1,
-                  "Ready Containers": 2,
-                  "Total Containers": 3,
-                  "Ready %": 4,
-                  "Restarts 24h": 5
+                  "Value #A": 2,
+                  "Value #B": 3,
+                  "Value #C": 4,
+                  "Value #D": 5
                 },
                 "renameByName": {
+                  "Value #A": "Ready Containers",
+                  "Value #B": "Total Containers",
+                  "Value #C": "Ready %",
+                  "Value #D": "Restarts 24h",
                   "namespace": "Namespace",
                   "pod": "Pod"
                 }
