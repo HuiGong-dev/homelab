@@ -7,4 +7,4 @@ resources:
   - cronjob.yaml
 images:
   - name: renovate/renovate
-    newTag: 43.214.3
+    newTag: 43.214.4
