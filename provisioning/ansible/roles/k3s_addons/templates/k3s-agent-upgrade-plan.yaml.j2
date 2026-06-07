@@ -1,8 +1,8 @@
-# /var/lib/rancher/k3s/server/manifests/k3s-server-upgrade-plan.yaml
+# /var/lib/rancher/k3s/server/manifests/k3s-agent-upgrade-plan.yaml
 apiVersion: upgrade.cattle.io/v1
 kind: Plan
 metadata:
-  name: k3s-server-plan
+  name: k3s-agent-plan
   namespace: system-upgrade
 spec:
   concurrency: 1
@@ -13,12 +13,17 @@ spec:
     deleteEmptyDirData: true
     gracePeriod: 120
     timeout: 600
+  prepare:
+    image: rancher/k3s-upgrade
+    args:
+      - prepare
+      - k3s-server-plan
   serviceAccountName: system-upgrade
 
   nodeSelector:
     matchExpressions:
       - key: node-role.kubernetes.io/control-plane
-        operator: Exists
+        operator: DoesNotExist
 
   upgrade:
     image: rancher/k3s-upgrade

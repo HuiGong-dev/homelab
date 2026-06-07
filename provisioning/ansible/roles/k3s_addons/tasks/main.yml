@@ -59,19 +59,30 @@
 - name: Install k3s system upgrade Plan manifest
   ansible.builtin.template:
     src: k3s-server-upgrade-plan.yaml.j2
-    dest: "{{ k3s_system_upgrade_plan_path }}"
+    dest: "{{ k3s_system_server_upgrade_plan_path }}"
     owner: root
     group: root
     mode: "0644"
 
-- name: Wait for k3s system upgrade Plan
+- name: Install k3s agent upgrade Plan manifest
+  ansible.builtin.template:
+    src: k3s-agent-upgrade-plan.yaml.j2
+    dest: "{{ k3s_system_agent_upgrade_plan_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Wait for k3s system and agent upgrade Plans
   ansible.builtin.command:
-    cmd: /usr/local/bin/k3s kubectl -n system-upgrade get plan k3s-server-plan
-  register: k3s_upgrade_plan
+    cmd: "/usr/local/bin/k3s kubectl -n system-upgrade get plan {{ item }}"
+  register: k3s_upgrade_plans
   changed_when: false
-  until: k3s_upgrade_plan.rc == 0
+  until: k3s_upgrade_plans.rc == 0
   retries: 30
   delay: 10
+  loop:
+    - k3s-server-plan
+    - k3s-agent-plan
 
 - name: Wait for Traefik rollout
   ansible.builtin.command:
