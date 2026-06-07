@@ -10,9 +10,9 @@ spec:
   drain:
     force: true
     ignoreDaemonSets: true
-    deleteEmptyDirData: true
+    deleteEmptydirData: true
     gracePeriod: 120
-    timeout: 600
+    timeout: "10m"
   prepare:
     image: rancher/k3s-upgrade
     args:
