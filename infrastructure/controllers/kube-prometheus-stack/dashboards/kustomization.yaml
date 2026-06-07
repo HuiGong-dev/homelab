@@ -8,3 +8,4 @@ resources:
   - homelab-kubernetes-nodes-overview.yaml
   - homelab-kubernetes-pods-overview.yaml
   - homelab-kubernetes-cronjob-overview.yaml
+  - homelab-kubernetes-workload-status.yaml
