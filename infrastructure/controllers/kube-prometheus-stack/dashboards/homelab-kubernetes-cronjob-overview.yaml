@@ -1968,7 +1968,7 @@ data:
       },
       "timepicker": {},
       "timezone": "",
-      "title": "Homelab Kubernetes CronJob and Job Overview",
+      "title": "Homelab / Kubernetes / Jobs",
       "uid": "homelab-kubernetes-cronjob-overview",
       "version": 13,
       "description": "A simple dashboard to monitor k8s CronJobs and standalone Jobs"

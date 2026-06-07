@@ -990,7 +990,7 @@ data:
       },
       "timepicker": {},
       "timezone": "browser",
-      "title": "Kubernetes Storage",
+      "title": "Homelab / Kubernetes / Storage",
       "uid": "homelab-kubernetes-storage-overview",
       "version": 1,
       "weekStart": ""

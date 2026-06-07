@@ -564,7 +564,7 @@ data:
       },
       "timepicker": {},
       "timezone": "browser",
-      "title": "Homelab Kubernetes Overview",
+      "title": "Homelab / Kubernetes / Overview",
       "uid": "homelab-kubernetes-overview",
       "version": 1,
       "weekStart": ""
