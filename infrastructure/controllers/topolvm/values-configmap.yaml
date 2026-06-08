@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: topolvm-values
+  namespace: flux-system
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+data:
+  values.yaml: |-
+    scheduler:
+      enabled: false
+
+    lvmd:
+      deviceClasses:
+        - name: ssd
+          volume-group: topolvm
+          default: true
+          spare-gb: 10
+      prometheus:
+        podMonitor:
+          enabled: true
+
+    node:
+      prometheus:
+        podMonitor:
+          enabled: true
+
+    controller:
+      storageCapacityTracking:
+        enabled: true
+      prometheus:
+        podMonitor:
+          enabled: true
+
+    storageClasses:
+      - name: topolvm-provisioner
+        storageClass:
+          fsType: xfs
+          isDefaultClass: false
+          volumeBindingMode: WaitForFirstConsumer
+          allowVolumeExpansion: true
+
+    cert-manager:
+      enabled: false
