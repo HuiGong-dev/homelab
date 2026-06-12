@@ -48,8 +48,6 @@ data:
         tls:
           - hosts:
               - grafana.home.hgpe.dev
-      nodeSelector:
-        kubernetes.io/hostname: k3s-server-01
       persistence:
         enabled: true
         type: pvc
@@ -69,8 +67,6 @@ data:
     alertmanager:
       enabled: true
       alertmanagerSpec:
-        nodeSelector:
-          kubernetes.io/hostname: k3s-server-01
         storage:
           volumeClaimTemplate:
             spec:
@@ -83,8 +79,6 @@ data:
 
     prometheus:
       prometheusSpec:
-        nodeSelector:
-          kubernetes.io/hostname: k3s-agent-01
         retention: 7d
         retentionSize: 8GB
         storageSpec:
