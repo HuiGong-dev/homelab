@@ -868,7 +868,7 @@ data:
           "pluginVersion": "7.2.1",
           "targets": [
             {
-              "expr": "sum by (pvc_key, persistentvolumeclaim, namespace, storageclass, volumename) (label_join(kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"}, \"pvc_key\", \"/\", \"namespace\", \"persistentvolumeclaim\"))",
+              "expr": "sum by (persistentvolumeclaim, namespace, storageclass, volumename) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -876,7 +876,7 @@ data:
               "refId": "A"
             },
             {
-              "expr": "label_join(max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"}), \"pvc_key\", \"/\", \"namespace\", \"persistentvolumeclaim\")",
+              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -884,7 +884,7 @@ data:
               "refId": "B"
             },
             {
-              "expr": "label_join(max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}), \"pvc_key\", \"/\", \"namespace\", \"persistentvolumeclaim\")",
+              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -892,7 +892,7 @@ data:
               "refId": "C"
             },
             {
-              "expr": "label_join(max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}), \"pvc_key\", \"/\", \"namespace\", \"persistentvolumeclaim\")",
+              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -900,7 +900,7 @@ data:
               "refId": "D"
             },
             {
-              "expr": "label_join(sum by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_status_phase{namespace=~\"${k8s_namespace}\",phase=~\"(Pending|Lost)\"}) + sum by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_status_phase{namespace=~\"${k8s_namespace}\",phase=\"Lost\"}), \"pvc_key\", \"/\", \"namespace\", \"persistentvolumeclaim\")",
+              "expr": "sum by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_status_phase{namespace=~\"${k8s_namespace}\",phase=~\"(Pending|Lost)\"}) + sum by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_status_phase{namespace=~\"${k8s_namespace}\",phase=\"Lost\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -908,7 +908,7 @@ data:
               "refId": "E"
             },
             {
-              "expr": "100 * label_join(max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}) / max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"}), \"pvc_key\", \"/\", \"namespace\", \"persistentvolumeclaim\")",
+              "expr": "100 * max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}) / max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -923,7 +923,7 @@ data:
             {
               "id": "seriesToColumns",
               "options": {
-                "byField": "pvc_key"
+                "byField": "persistentvolumeclaim"
               }
             },
             {
@@ -949,7 +949,12 @@ data:
                   "namespace 3": true,
                   "namespace 4": true,
                   "namespace 5": true,
-                  "namespace 6": true
+                  "namespace 6": true,
+                  "persistentvolumeclaim 2": true,
+                  "persistentvolumeclaim 3": true,
+                  "persistentvolumeclaim 4": true,
+                  "persistentvolumeclaim 5": true,
+                  "persistentvolumeclaim 6": true
                 },
                 "indexByName": {
                 },
@@ -970,7 +975,8 @@ data:
                   "persistentvolumeclaim": "PersistentVolumeClaim",
                   "storageclass": "StorageClass",
                   "volumename": "PhysicalVolume",
-                  "namespace 1": "Namespace"
+                  "namespace 1": "Namespace",
+                  "persistentvolumeclaim 1": "PersistentVolumeClaim"
                 }
               }
             }
