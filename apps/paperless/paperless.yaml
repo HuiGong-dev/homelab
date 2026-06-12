@@ -15,8 +15,6 @@ spec:
         app.kubernetes.io/name: paperless
         app.kubernetes.io/part-of: paperless
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: k3s-server-01
       enableServiceLinks: false
       initContainers:
         - name: wait-for-db

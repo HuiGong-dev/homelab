@@ -15,8 +15,6 @@ spec:
         app.kubernetes.io/name: redis
         app.kubernetes.io/part-of: paperless
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: k3s-agent-01
       containers:
         - name: redis
           image: redis:8

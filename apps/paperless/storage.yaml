@@ -6,6 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: topolvm-local-rwo
   resources:
     requests:
       storage: 2Gi
@@ -18,6 +19,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: topolvm-local-rwo
   resources:
     requests:
       storage: 10Gi
@@ -30,9 +32,10 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: topolvm-local-rwo
   resources:
     requests:
-      storage: 100Gi
+      storage: 20Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -42,6 +45,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: topolvm-local-rwo
   resources:
     requests:
       storage: 10Gi
@@ -54,6 +58,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: topolvm-local-rwo
   resources:
     requests:
-      storage: 10Gi
+      storage: 20Gi
