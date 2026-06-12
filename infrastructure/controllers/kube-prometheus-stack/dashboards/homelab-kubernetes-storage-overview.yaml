@@ -152,7 +152,7 @@ data:
           "pluginVersion": "7.2.1",
           "targets": [
             {
-              "expr": "(\n  count (\n    (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"})\n    and\n    (predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 2 * 24 * 60 * 60) < 0)\n  )\n)\nor\nvector(0)",
+              "expr": "count(max by (persistentvolumeclaim, namespace) ((predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 2 * 24 * 60 * 60) < 0) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"}))) or vector(0)",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -235,7 +235,7 @@ data:
           "pluginVersion": "7.2.1",
           "targets": [
             {
-              "expr": "(\n  count (\n    (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"})\n    and\n    (predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 5 * 24 * 60 * 60) < 0)\n  )\n)\nor\nvector(0)",
+              "expr": "count(max by (persistentvolumeclaim, namespace) ((predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 5 * 24 * 60 * 60) < 0) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"}))) or vector(0)",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -318,7 +318,7 @@ data:
           "pluginVersion": "7.2.1",
           "targets": [
             {
-              "expr": "(\n  count (\n    (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"})\n    and\n    (predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 7 * 24 * 60 * 60) < 0)\n  )\n)\nor\nvector(0)",
+              "expr": "count(max by (persistentvolumeclaim, namespace) ((predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 7 * 24 * 60 * 60) < 0) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"}))) or vector(0)",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -400,7 +400,7 @@ data:
           "pluginVersion": "7.2.1",
           "targets": [
             {
-              "expr": "count (max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"} ) and (max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"} )) / (max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"} )) >= (${warning_threshold} / 100)) or vector (0)",
+              "expr": "count(((max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"})) / (max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"})) >= (${warning_threshold} / 100)) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})) or vector(0)",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -888,7 +888,7 @@ data:
               "refId": "A"
             },
             {
-              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"})",
+              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"}) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -896,7 +896,7 @@ data:
               "refId": "B"
             },
             {
-              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"})",
+              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -904,7 +904,7 @@ data:
               "refId": "C"
             },
             {
-              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"})",
+              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -920,7 +920,7 @@ data:
               "refId": "E"
             },
             {
-              "expr": "100 * max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}) / max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"})",
+              "expr": "100 * ((max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"})) / (max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"})) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"}))",
               "format": "table",
               "instant": true,
               "interval": "",
@@ -1204,7 +1204,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "(max by (persistentvolumeclaim,namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}))",
+              "expr": "max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})",
               "interval": "",
               "legendFormat": "{{namespace}} ({{persistentvolumeclaim}})",
               "refId": "A"
@@ -1330,7 +1330,7 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "rate(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1h])",
+                  "expr": "max by (persistentvolumeclaim, namespace) (rate(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1h])) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})",
                   "instant": false,
                   "interval": "",
                   "legendFormat": "{{namespace}} ({{persistentvolumeclaim}})",
@@ -1443,7 +1443,7 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "rate(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d])",
+                  "expr": "max by (persistentvolumeclaim, namespace) (rate(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d])) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})",
                   "interval": "",
                   "legendFormat": "{{namespace}} ({{persistentvolumeclaim}})",
                   "refId": "A"
@@ -1555,7 +1555,7 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "rate(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1w])",
+                  "expr": "max by (persistentvolumeclaim, namespace) (rate(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1w])) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})",
                   "instant": false,
                   "interval": "",
                   "legendFormat": "{{namespace}} ({{persistentvolumeclaim}})",
