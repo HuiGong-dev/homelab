@@ -6,3 +6,4 @@ resources:
   - traefik.yaml
   - external-dns.yaml
   - prometheus-community.yaml
+  - topolvm.yaml
