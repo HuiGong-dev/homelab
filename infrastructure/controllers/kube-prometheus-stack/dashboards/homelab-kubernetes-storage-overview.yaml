@@ -661,6 +661,18 @@ data:
                   {
                     "id": "decimals",
                     "value": 1
+                  },
+                  {
+                    "id": "unit",
+                    "value": "percent"
+                  },
+                  {
+                    "id": "min",
+                    "value": 0
+                  },
+                  {
+                    "id": "max",
+                    "value": 100
                   }
                 ]
               },
