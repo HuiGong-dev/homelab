@@ -152,7 +152,7 @@ data:
           "pluginVersion": "7.2.1",
           "targets": [
             {
-              "expr": "count(max by (persistentvolumeclaim, namespace) ((predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 2 * 24 * 60 * 60) < 0) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"}))) or vector(0)",
+              "expr": "count(((max by (persistentvolumeclaim, namespace) (predict_linear(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d], 2 * 24 * 60 * 60))) > (max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"}))) and ((max by (persistentvolumeclaim, namespace) (deriv(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d]))) > 1024) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})) or vector(0)",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -235,7 +235,7 @@ data:
           "pluginVersion": "7.2.1",
           "targets": [
             {
-              "expr": "count(max by (persistentvolumeclaim, namespace) ((predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 5 * 24 * 60 * 60) < 0) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"}))) or vector(0)",
+              "expr": "count(((max by (persistentvolumeclaim, namespace) (predict_linear(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d], 5 * 24 * 60 * 60))) > (max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"}))) and ((max by (persistentvolumeclaim, namespace) (deriv(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d]))) > 1024) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})) or vector(0)",
               "instant": true,
               "interval": "",
               "legendFormat": "",
@@ -318,7 +318,7 @@ data:
           "pluginVersion": "7.2.1",
           "targets": [
             {
-              "expr": "count(max by (persistentvolumeclaim, namespace) ((predict_linear(kubelet_volume_stats_available_bytes{namespace=~\"${k8s_namespace}\"}[1d], 7 * 24 * 60 * 60) < 0) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"}))) or vector(0)",
+              "expr": "count(((max by (persistentvolumeclaim, namespace) (predict_linear(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d], 7 * 24 * 60 * 60))) > (max by (persistentvolumeclaim, namespace) (kubelet_volume_stats_capacity_bytes{namespace=~\"${k8s_namespace}\"}))) and ((max by (persistentvolumeclaim, namespace) (deriv(kubelet_volume_stats_used_bytes{namespace=~\"${k8s_namespace}\"}[1d]))) > 1024) and on (persistentvolumeclaim, namespace) max by (persistentvolumeclaim, namespace) (kube_persistentvolumeclaim_info{namespace=~\"${k8s_namespace}\"})) or vector(0)",
               "instant": true,
               "interval": "",
               "legendFormat": "",
