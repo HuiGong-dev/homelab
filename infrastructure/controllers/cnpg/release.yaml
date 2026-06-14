@@ -25,3 +25,6 @@ spec:
       retries: 3
   values:
     replicaCount: 1
+    config:
+      data:
+        ENABLE_INSTANCE_MANAGER_INPLACE_UPDATES: "true"
