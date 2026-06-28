@@ -6,7 +6,7 @@ k3s_system_upgrade_crd_url: https://github.com/rancher/system-upgrade-controller
 k3s_system_upgrade_controller_url: https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
 k3s_system_server_upgrade_plan_path: "{{ k3s_manifests_dir }}/k3s-server-upgrade-plan.yaml"
 k3s_system_agent_upgrade_plan_path: "{{ k3s_manifests_dir }}/k3s-agent-upgrade-plan.yaml"
-k3s_upgrade_version: v1.36.1+k3s1
+k3s_upgrade_version: v1.36.2+k3s1
 k3s_upgrade_window_days:
   - saturday
   - sunday
