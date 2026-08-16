@@ -13,4 +13,4 @@ resources:
 images:
   - name: paperless-ngx
     newName: ghcr.io/paperless-ngx/paperless-ngx
-    newTag: 2.20.15
+    newTag: 3.0.5
