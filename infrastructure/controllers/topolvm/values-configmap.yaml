@@ -30,6 +30,11 @@ data:
           enabled: true
 
     controller:
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
       storageCapacityTracking:
         enabled: true
       prometheus:
