@@ -13,10 +13,7 @@ data:
       - traefik-proxy
     domainFilters:
       - home.hgpe.dev
-    # Keep the legacy filter through the v0.22 upgrade. After v0.22 is healthy,
-    # switch this to external-dns.kubernetes.io/enabled=true and remove the
-    # external-dns.alpha.kubernetes.io/* annotations from managed resources.
-    annotationFilter: external-dns.alpha.kubernetes.io/enabled=true
+    annotationFilter: external-dns.kubernetes.io/enabled=true
     registry: txt
     txtOwnerId: homelab-k3s
     policy: upsert-only

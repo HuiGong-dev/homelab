@@ -35,9 +35,6 @@ metadata:
     external-dns.kubernetes.io/enabled: "true"
     external-dns.kubernetes.io/hostname: homeassistant.home.hgpe.dev
     external-dns.kubernetes.io/target: 192.168.178.13,192.168.178.14
-    external-dns.alpha.kubernetes.io/enabled: "true"
-    external-dns.alpha.kubernetes.io/hostname: homeassistant.home.hgpe.dev
-    external-dns.alpha.kubernetes.io/target: 192.168.178.13,192.168.178.14
 spec:
   entryPoints:
     - websecure
