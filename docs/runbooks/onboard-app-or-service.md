@@ -105,6 +105,8 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: 'true'
+    external-dns.kubernetes.io/enabled: 'true'
+    external-dns.kubernetes.io/hostname: example.home.hgpe.dev
     external-dns.alpha.kubernetes.io/enabled: 'true'
     external-dns.alpha.kubernetes.io/hostname: example.home.hgpe.dev
 spec:
@@ -125,9 +127,9 @@ spec:
                   number: 8080
 ```
 
-Do not set `external-dns.alpha.kubernetes.io/target` on standard `Ingress`
-resources. ExternalDNS discovers the Traefik LoadBalancer IPs from the Ingress
-status.
+Do not set `external-dns.kubernetes.io/target` (or its temporary legacy
+equivalent) on standard `Ingress` resources. ExternalDNS discovers the Traefik
+LoadBalancer IPs from the Ingress status.
 
 The `tls` block enables HTTPS routing. Traefik serves the default wildcard
 certificate from the `TLSStore`, so app namespaces do not need their own copy of
@@ -172,6 +174,9 @@ metadata:
   name: example
   namespace: networking
   annotations:
+    external-dns.kubernetes.io/enabled: 'true'
+    external-dns.kubernetes.io/hostname: example.home.hgpe.dev
+    external-dns.kubernetes.io/target: 192.168.178.13,192.168.178.14
     external-dns.alpha.kubernetes.io/enabled: 'true'
     external-dns.alpha.kubernetes.io/hostname: example.home.hgpe.dev
     external-dns.alpha.kubernetes.io/target: 192.168.178.13,192.168.178.14
@@ -188,9 +193,10 @@ spec:
   tls: {}
 ```
 
-Keep `external-dns.alpha.kubernetes.io/target` on `IngressRoute` resources.
-ExternalDNS does not infer the Traefik LoadBalancer target from Traefik CRDs in
-the same way it does for standard `Ingress`.
+Keep `external-dns.kubernetes.io/target` and, during the v0.21 to v0.22
+migration, its legacy equivalent on `IngressRoute` resources. ExternalDNS does
+not infer the Traefik LoadBalancer target from Traefik CRDs in the same way it
+does for standard `Ingress`.
 
 If the backend uses HTTPS with a self-signed certificate, add a
 `ServersTransport` and reference it from the route:
@@ -241,6 +247,32 @@ Only annotated routes are processed because ExternalDNS uses:
 
 ```yaml
 annotationFilter: external-dns.alpha.kubernetes.io/enabled=true
+```
+
+### ExternalDNS v0.22 annotation migration
+
+ExternalDNS v0.22 changes its default annotation prefix from
+`external-dns.alpha.kubernetes.io/` to `external-dns.kubernetes.io/` without a
+fallback. Until the upgrade is complete, every managed route must carry both
+prefixes with identical values, as shown in the examples above. The v0.21
+controller reads the legacy annotations; v0.22 reads the stable annotations.
+The legacy annotation filter remains usable during the bridge because it only
+selects resources.
+
+After v0.22 has reconciled successfully and the expected records still resolve,
+remove every `external-dns.alpha.kubernetes.io/*` annotation and change the
+filter in `infrastructure/controllers/external-dns/values-configmap.yaml` to:
+
+```yaml
+annotationFilter: external-dns.kubernetes.io/enabled=true
+```
+
+Apply those cleanup changes together so the filter and route annotations never
+refer to different prefixes. Confirm that no legacy annotations remain with:
+
+```sh
+rg 'external-dns\.alpha\.kubernetes\.io/(enabled|hostname|target):' \
+  apps platform infrastructure provisioning
 ```
 
 For `home.hgpe.dev` names, prefer ExternalDNS annotations over manual AdGuard

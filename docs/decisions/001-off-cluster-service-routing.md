@@ -107,6 +107,8 @@ metadata:
   name: pve
   namespace: networking
   annotations:
+    external-dns.kubernetes.io/hostname: pve.home.hgpe.dev
+    # Temporary compatibility annotation for ExternalDNS v0.21.
     external-dns.alpha.kubernetes.io/hostname: pve.home.hgpe.dev
 spec:
   entryPoints:
@@ -121,6 +123,11 @@ spec:
   tls:
     secretName: home-hgpe-dev-wildcard-tls
 ```
+
+Both annotation prefixes are present during the ExternalDNS v0.21 to v0.22
+migration. The `external-dns.alpha.kubernetes.io/` annotation must be removed
+after v0.22 has reconciled successfully; the stable
+`external-dns.kubernetes.io/` annotation is the long-term configuration.
 
 The wildcard certificate for `*.home.hgpe.dev` will be issued and renewed by cert-manager using a Cloudflare DNS-01 `ClusterIssuer`.
 

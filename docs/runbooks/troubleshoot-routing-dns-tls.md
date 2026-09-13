@@ -91,6 +91,9 @@ kubectl -n paperless get ingress paperless -o yaml
 
 Expected:
 
+- `external-dns.kubernetes.io/enabled: "true"`
+- `external-dns.kubernetes.io/hostname: paperless.home.hgpe.dev`
+- no explicit `external-dns.kubernetes.io/target`
 - `external-dns.alpha.kubernetes.io/enabled: "true"`
 - `external-dns.alpha.kubernetes.io/hostname: paperless.home.hgpe.dev`
 - no explicit `external-dns.alpha.kubernetes.io/target`
@@ -104,6 +107,9 @@ kubectl -n networking get ingressroute pve -o yaml
 
 Expected:
 
+- `external-dns.kubernetes.io/enabled: "true"`
+- `external-dns.kubernetes.io/hostname: pve.home.hgpe.dev`
+- `external-dns.kubernetes.io/target: 192.168.178.13,192.168.178.14`
 - `external-dns.alpha.kubernetes.io/enabled: "true"`
 - `external-dns.alpha.kubernetes.io/hostname: pve.home.hgpe.dev`
 - `external-dns.alpha.kubernetes.io/target: 192.168.178.13,192.168.178.14`
@@ -119,6 +125,7 @@ kubectl -n external-dns get secret adguard-configuration
 Common DNS causes:
 
 - Missing `enabled=true` annotation.
+- Stable and legacy annotations have different values during the v0.22 migration.
 - Wrong hostname.
 - Missing `target` annotation on an `IngressRoute`.
 - ExternalDNS is not watching the right source.
